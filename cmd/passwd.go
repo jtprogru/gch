@@ -49,9 +49,9 @@ to quickly create a Cobra application.`,
 func init() {
 	rootCmd.AddCommand(passwdCmd)
 	r = *rand.New(rand.NewSource(time.Now().UnixMicro()))
-	passwdCmd.Flags().IntVarP(&passwdLength, "length", "l", 24, "Length of password (default=24)")
-	passwdCmd.Flags().BoolVar(&passwdDigits, "digits", true, "Present digits in password (default=true)")
-	passwdCmd.Flags().BoolVar(&passwdSpecials, "specials", true, "Present special symbols in password (default=true)")
+	passwdCmd.Flags().IntVarP(&passwdLength, "length", "l", 24, "Length of password")
+	passwdCmd.Flags().BoolVar(&passwdDigits, "digits", true, "Present digits in password")
+	passwdCmd.Flags().BoolVar(&passwdSpecials, "specials", true, "Present special symbols in password")
 }
 
 func getPasswd(passwdLen int, digitFlag bool, specFlag bool) string {
