@@ -6,6 +6,7 @@ SHELL := /bin/bash
 # Global vars
 export SYS_GO=$(shell which go)
 export SYS_GOFMT=$(shell which gofmt)
+export SYS_GOLINT=$(shell which golangci-lint)
 
 export BINARY_DIR=dist
 export BINARY_NAME=gch
@@ -49,18 +50,23 @@ clean:
 .PHONY: test
 ## Run all test
 test:
-	go test --short -coverprofile=cover.out -v ./...
+	$(SYS_GO) test --short -coverprofile=cover.out -v ./...
 	make test.coverage
 
 .PHONY: test.coverage
 ## Run test coverage
 test.coverage:
-	go tool cover -func=cover.out
+	$(SYS_GO) tool cover -func=cover.out
 
 .PHONY: lint
 ## Run golangci-lint
 lint:
-	golangci-lint -v run --out-format=colored-line-number
+	$(SYS_GOLINT) -v run --out-format=colored-line-number
+
+.PHONY: install
+## Build and install localy
+install:
+	$(SYS_GO) install
 
 .PHONY: help
 ## Show this help message
