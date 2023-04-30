@@ -48,12 +48,7 @@ var (
 	passwdCmd = &cobra.Command{
 		Use:   "passwd",
 		Short: "Generate random password",
-		Long: `Simple password generations
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+		Long:  `Simple password generations`,
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println(getPasswd(passwdLength, passwdDigits, passwdSpecials))
 		},
