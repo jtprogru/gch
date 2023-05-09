@@ -8,6 +8,11 @@ Go CLI Helper (gch) this is a simple CLI utility that helps make my life easier 
 
 Now gch is not able to do so much, but I use it daily.
 
+
+## Project Status
+
+![Alt](https://repobeats.axiom.co/api/embed/90f398a2bc0fb93e055987ed40743d2f318e2ebc.svg "Repobeats analytics image")
+
 ## License
 
 MIT
