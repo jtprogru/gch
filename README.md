@@ -8,6 +8,9 @@ Go CLI Helper (gch) this is a simple CLI utility that helps make my life easier 
 
 Now gch is not able to do so much, but I use it daily.
 
+## Installation
+
+For installation you need to load latest version from [Release](https://github.com/jtprogru/gch/releases) page and download version for you platform.
 
 ## Project Status
 
