@@ -36,7 +36,7 @@ var (
 		Long: `A UUID is a 16 byte (128 bit) array.
 UUIDs may be used as keys to maps or compared directly.`,
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println(getUUID())
+			fmt.Println(GetUUID())
 		},
 	}
 	v4UUID    bool
@@ -48,22 +48,13 @@ UUIDs may be used as keys to maps or compared directly.`,
 
 func init() {
 	rootCmd.AddCommand(uuidCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// uuidCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
 	uuidCmd.Flags().BoolVarP(&v4UUID, "v4", "4", true, "Generate UUID4")
 	uuidCmd.Flags().BoolVarP(&v5UUID, "v5", "5", false, "Generate UUID5")
 	uuidCmd.Flags().BoolVarP(&nilUUID, "v0", "0", false, "Generate UUIDnil")
 
 }
 
-func getUUID() string {
+func GetUUID() string {
 	switch {
 	case v4UUID:
 		return uuid.New().String()

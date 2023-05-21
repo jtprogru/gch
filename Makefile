@@ -8,9 +8,7 @@ export SYS_GO=$(shell which go)
 export SYS_GOFMT=$(shell which gofmt)
 export SYS_GOLINT=$(shell which golangci-lint)
 
-export BINARY_DIR=dist
 export BINARY_NAME=gch
-
 
 .PHONY: run.cmd
 ## Run as go run main.go
@@ -20,7 +18,7 @@ run.cmd: main.go
 .PHONY: run.bin
 ## Run as binary
 run.bin: build.bin
-	./$(BINARY_DIR)/$(BINARY_NAME)
+	$(HOME)/go/bin/$(BINARY_NAME)
 
 .PHONY: tidy
 ## Install all requirements
@@ -30,7 +28,7 @@ tidy: go.mod
 .PHONY: build.bin
 ## Build bin file from go
 build.bin: main.go
-	$(SYS_GO) mod download && CGO_ENABLED=0 $(SYS_GO) build -o ./$(BINARY_DIR)/$(BINARY_NAME) main.go
+	$(SYS_GO) mod download && CGO_ENABLED=0 $(SYS_GO) build -o $(HOME)/go/bin/$(BINARY_NAME) main.go
 
 .PHONY: fmt
 ## Run go fmt
