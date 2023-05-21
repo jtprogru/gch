@@ -24,12 +24,17 @@ package cmd
 import (
 	"fmt"
 	"image"
+	"image/jpeg"
+	"image/png"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/corona10/goimagehash"
 	"github.com/spf13/cobra"
 )
+
+const similarityThreshold = 20
 
 var (
 	// duplCmd represents the dupl command
@@ -61,7 +66,7 @@ func init() {
 
 func findDuplicates(directory string) (map[string][]string, error) {
 	duplicates := make(map[string][]string)
-	hashes := make(map[string]string)
+	hashes := make(map[*goimagehash.ImageHash]string)
 
 	err := filepath.Walk(directory, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -72,21 +77,29 @@ func findDuplicates(directory string) (map[string][]string, error) {
 			return nil
 		}
 
+		ext := strings.ToLower(filepath.Ext(path))
+		if ext != ".jpg" && ext != ".jpeg" && ext != ".png" {
+			return nil
+		}
+
 		file, err := os.Open(path)
 		if err != nil {
 			fmt.Printf("os open err: %v\n", err.Error())
 			return err
 		}
 		defer file.Close()
-		fmt.Printf("open file: %v\n", file.Name())
 
-		// FIXME: Исправить часто возникающую ошибку "image decode err: image: unknown format"
-		img, _, err := image.Decode(file)
+		var img image.Image
+		if ext == ".png" {
+			img, err = png.Decode(file)
+		} else {
+			img, err = jpeg.Decode(file)
+		}
+
 		if err != nil {
 			fmt.Printf("image decode err: %v\n", err.Error())
 			return nil
 		}
-		fmt.Printf("image decoded: %v\n", file.Name())
 
 		imgHash, err := goimagehash.PerceptionHash(img)
 		if err != nil {
@@ -94,13 +107,19 @@ func findDuplicates(directory string) (map[string][]string, error) {
 			return err
 		}
 
-		hashStr := imgHash.ToString()
-		if original, exists := hashes[hashStr]; exists {
-			duplicates[original] = append(duplicates[original], path)
-		} else {
-			hashes[hashStr] = path
+		// find similar images
+		for storedHash, storedPath := range hashes {
+			distance, err := imgHash.Distance(storedHash)
+			if err != nil {
+				return err
+			}
+
+			if distance < similarityThreshold {
+				duplicates[storedPath] = append(duplicates[storedPath], path)
+			}
 		}
-		fmt.Printf("image processed: %v\n", file.Name())
+
+		hashes[imgHash] = path
 
 		return nil
 	})
