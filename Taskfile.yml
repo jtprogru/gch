@@ -1,0 +1,88 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  HOME:
+    sh: echo $HOME
+  BINARY_NAME: gch
+
+tasks:
+  default:
+    cmds:
+      - task --list
+    silent: true
+
+  run.cmd:
+    desc: Run as go run main.go
+    preconditions:
+      - test -f $(which go)
+    cmds:
+      - go run main.go
+
+  run.bin:
+    desc: Run as binary
+    deps:
+      - build.bin
+    cmds:
+      - "{{ .HOME }}/go/bin/{{ .BINARY_NAME }}"
+
+  tidy:
+    desc: Install all requirements
+    preconditions:
+      - test -f $(which go)
+      - test -f go.mod
+    cmds:
+      - go mod tidy
+
+  build.bin:
+    desc: Build bin file from go
+    preconditions:
+      - test -f $(which go)
+      - test -f main.go
+    cmds:
+      - go mod download
+      - CGO_ENABLED=0 go build -o {{ .HOME }}/go/bin/{{ .BINARY_NAME }} main.go
+
+  fmt:
+    desc: Run go fmt
+    preconditions:
+      - test -f $(which gofmt)
+    cmds:
+      - gofmt -s -w .
+
+  vet:
+    desc: Run go vet ./...
+    preconditions:
+      - test -f $(which go)
+    cmds:
+      - go vet ./...
+
+  test:
+    desc: Run all test
+    preconditions:
+      - test -f $(which go)
+    cmds:
+      - go test --short -coverprofile=cover.out -v ./...
+      - task: test.coverage
+
+  test.coverage:
+    desc: Run test coverage
+    preconditions:
+      - test -f $(which go)
+    cmds:
+      - go tool cover -func=cover.out
+
+  lint:
+    desc: Run golangci-lint
+    preconditions:
+      - test -f $(golangci-lint)
+    cmds:
+      - golangci-lint -v run --out-format=colored-line-number
+
+  install:
+    desc: Build and install localy
+    preconditions:
+      - test -f $(which go)
+    cmds:
+      - go install
