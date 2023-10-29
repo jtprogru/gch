@@ -34,7 +34,7 @@ var (
 	cbrfCmd = &cobra.Command{
 		Use:   "cbrf",
 		Short: "Get currency exchange rates for RUB/USD and RUB/EUR",
-		Long:  `Get currency exchange rates for RUB/USD and RUB/EUR`,
+		Long:  `Get currency exchange rates for all currency from CBRF`,
 		Run: func(cmd *cobra.Command, args []string) {
 			exchangeRates, err := cbrf.GetExchangeRates()
 			if err != nil {
