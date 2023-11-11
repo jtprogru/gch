@@ -58,4 +58,5 @@ go install github.com/jtprogru/gch@$VERSION
 
 ## License
 
-MIT
+[MIT](LICENSE)
+
