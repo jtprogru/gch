@@ -29,8 +29,8 @@ Available Commands:
   dupl        Show all duplicates JPG and PNG in folder
   help        Help about any command
   passwd      Generate random password
+  short       Make short link from URL
   sretask     Create template with SRE task
-  uuid        Generate UUID string
 
 Flags:
       --config string   config file (default is $HOME/.gch.yaml)
@@ -59,4 +59,3 @@ go install github.com/jtprogru/gch@$VERSION
 ## License
 
 [MIT](LICENSE)
-
