@@ -6,6 +6,7 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/jtprogru/gch/internal/uuids"
 	"github.com/spf13/cobra"
 )
 
@@ -26,7 +27,6 @@ var (
 			} else {
 				fmt.Printf("File %v exist\nPlease use another name of SRE Task\n", fileName)
 			}
-
 		},
 	}
 	title        string
@@ -67,7 +67,7 @@ type taskTmpl struct {
 }
 
 func rendertask(t string, fileName string) {
-	var timeFormat = "2006-01-02T15:04:05"
+	timeFormat := "2006-01-02T15:04:05"
 	var f *os.File
 	var err error
 	tmpl, err := template.New("").Parse(taskTemplate)
@@ -77,7 +77,7 @@ func rendertask(t string, fileName string) {
 	}
 	task := taskTmpl{}
 
-	task.Id = GetUUID()
+	task.Id = uuids.GetUUID()
 	task.CreationDate = time.Now().Format(timeFormat)
 	task.ModificationDate = time.Now().Format(timeFormat)
 	task.Title = t
@@ -102,5 +102,4 @@ func rendertask(t string, fileName string) {
 
 	fmt.Println("Please open file for edit task:")
 	fmt.Printf("%v\n", fileName)
-
 }
