@@ -24,6 +24,7 @@ Usage:
   gch [command]
 
 Available Commands:
+  breif       Generate a short description for your long URL
   cbrf        Get currency exchange rates for RUB/USD and RUB/EUR
   completion  Generate the autocompletion script for the specified shell
   dupl        Show all duplicates JPG and PNG in folder
