@@ -45,13 +45,7 @@ Use "gch [command] --help" for more information about a command.
 
 For installation you need to load latest version from [Release](https://github.com/jtprogru/gch/releases) page and download version for you platform.
 
-Another way is usage `go install`:
-
-```shell
-# Get latest version from CLI
-VERSION=`curl -sSL https://api.github.com/repos/jtprogru/gch/releases/latest -s | jq .name -r`
-go install github.com/jtprogru/gch@$VERSION
-```
+Another way is usage `go install` – for more details see project [Wiki](https://github.com/jtprogru/gch/wiki#installation).
 
 ## Project Status
 
