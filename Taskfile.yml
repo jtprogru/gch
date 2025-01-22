@@ -63,8 +63,15 @@ tasks:
     preconditions:
       - test -f $(which go)
     cmds:
-      - go test --short -coverprofile=cover.out -v ./...
+      - task: test.short
       - task: test.coverage
+
+  test.short:
+    desc: Run short test
+    preconditions:
+      - test -f $(which go)
+    cmds:
+      - go test --short -coverprofile=cover.out -v ./...
 
   test.coverage:
     desc: Run test coverage
