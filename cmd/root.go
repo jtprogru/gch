@@ -19,7 +19,7 @@ make my life easier and will be gradually supplemented with various functionalit
 
 Now gch is not able to do so much, but I use it every day.
 
-Complete documentation is available at https://github.com/jtprogru/gch`,
+Complete documentation is available at https://github.com/jtprogru/gch/wiki`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
