@@ -3,9 +3,8 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/spf13/cobra"
-
 	"github.com/jtprogru/gch/internal/cbrf"
+	"github.com/spf13/cobra"
 )
 
 var (
@@ -15,16 +14,15 @@ var (
 		Short: "Get currency exchange rates for RUB/USD and RUB/EUR",
 		Long:  `Get currency exchange rates for all currency from CBRF`,
 		Run: func(cmd *cobra.Command, args []string) {
-			exchangeRates, err := cbrf.GetExchangeRates()
-			if err != nil {
-				fmt.Println("Error:", err)
-				return
-			}
+			er := cbrf.CbrfValutes{}
 			if !showAll {
-				fmt.Printf("RUB/USD: %.2f\n", exchangeRates.Valute["USD"].Value)
-				fmt.Printf("RUB/EUR: %.2f\n", exchangeRates.Valute["EUR"].Value)
+				if err := er.ShortRates(); err != nil {
+					fmt.Println("Error:", err)
+				}
 			} else {
-				_ = exchangeRates.OutputAllRates()
+				if err := er.FullRates(); err != nil {
+					fmt.Println("Error:", err)
+				}
 			}
 		},
 	}
