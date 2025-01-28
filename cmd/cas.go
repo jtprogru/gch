@@ -9,8 +9,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var defaultTimeout = 15
-var verbose bool
+var (
+	defaultTimeout = 15
+	verbose        bool
+)
 
 // casCmd represents the cas command
 var casCmd = &cobra.Command{
@@ -38,9 +40,9 @@ to quickly create a Cobra application.`,
 			os.Exit(1)
 		}
 		if !status {
-			fmt.Println("User is not in the CAS list")
+			fmt.Println("👎 User is not in the CAS list")
 		} else {
-			fmt.Println("User is in the CAS list")
+			fmt.Println("👍 User is in the CAS list")
 		}
 	},
 }
