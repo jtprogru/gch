@@ -18,17 +18,19 @@ make my life easier and will be gradually supplemented with various functionalit
 
 Now gch is not able to do so much, but I use it every day.
 
-Complete documentation is available at https://github.com/jtprogru/gch
+Complete documentation is available at https://github.com/jtprogru/gch/wiki
 
 Usage:
   gch [command]
 
 Available Commands:
   breif       Generate a short description for your long URL
+  cas         A brief description of your command
   cbrf        Get currency exchange rates for RUB/USD and RUB/EUR
   completion  Generate the autocompletion script for the specified shell
   dupl        Show all duplicates JPG and PNG in folder
   help        Help about any command
+  lic         Generate new WTFPL license for you project
   passwd      Generate random password
   short       Make short link from URL
   sretask     Create template with SRE task
@@ -38,7 +40,6 @@ Flags:
   -h, --help            help for gch
 
 Use "gch [command] --help" for more information about a command.
-
 ```
 
 ## Installation
