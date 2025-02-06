@@ -18,14 +18,14 @@ tasks:
     preconditions:
       - test -f $(which go)
     cmds:
-      - go run main.go
+      - go run main.go {{ .CLI_ARGS }}
 
   run.bin:
     desc: Run as binary
     deps:
       - build.bin
     cmds:
-      - "{{ .HOME }}/go/bin/{{ .BINARY_NAME }}"
+      - "{{ .HOME }}/go/bin/{{ .BINARY_NAME }} {{ .CLI_ARGS }}"
 
   tidy:
     desc: Install all requirements
