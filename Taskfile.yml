@@ -80,6 +80,13 @@ tasks:
     cmds:
       - go tool cover -func=cover.out
 
+  test.watch:
+    desc: Run tests with watchexec
+    preconditions:
+      - test -f $(which watchexec)
+    cmds:
+      - watchexec -c clear -o do-nothing -d 100ms --exts go 'pkg=".${WATCHEXEC_COMMON_PATH/$PWD/}/..."; echo "running tests for $pkg"; go test "$pkg"'
+
   lint:
     desc: Run golangci-lint
     preconditions:
