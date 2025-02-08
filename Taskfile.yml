@@ -18,14 +18,14 @@ tasks:
     preconditions:
       - test -f $(which go)
     cmds:
-      - go run main.go
+      - go run main.go {{ .CLI_ARGS }}
 
   run.bin:
     desc: Run as binary
     deps:
       - build.bin
     cmds:
-      - "{{ .HOME }}/go/bin/{{ .BINARY_NAME }}"
+      - "{{ .HOME }}/go/bin/{{ .BINARY_NAME }} {{ .CLI_ARGS }}"
 
   tidy:
     desc: Install all requirements
@@ -79,6 +79,13 @@ tasks:
       - test -f $(which go)
     cmds:
       - go tool cover -func=cover.out
+
+  test.watch:
+    desc: Run tests with watchexec
+    preconditions:
+      - test -f $(which watchexec)
+    cmds:
+      - watchexec -c clear -o do-nothing -d 100ms --exts go 'pkg=".${WATCHEXEC_COMMON_PATH/$PWD/}/..."; echo "running tests for $pkg"; go test "$pkg"'
 
   lint:
     desc: Run golangci-lint

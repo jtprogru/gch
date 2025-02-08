@@ -44,9 +44,17 @@ Use "gch [command] --help" for more information about a command.
 
 ## Installation
 
-For installation you need to load latest version from [Release](https://github.com/jtprogru/gch/releases) page and download version for you platform.
+For installation, you need to load latest version from [Release](https://github.com/jtprogru/gch/releases) page and download version for you platform.
 
 Another way is usage `go install` – for more details see project [Wiki](https://github.com/jtprogru/gch/wiki#installation).
+
+## Development
+
+Clone the repository and run the following command to install dependencies:
+
+```shell
+task tidy
+```
 
 ## Project Status
 
