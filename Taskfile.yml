@@ -71,12 +71,10 @@ tasks:
 
   test:
     desc: Run all test
-    deps:
-      - precs
     cmds:
-      - task test:short
-      - task test:race
-      - task test:coverage
+      - "{{ .SYS_GO }} test --short -coverprofile=cover.out -v ./..."
+      - "{{ .SYS_GO }} test -race -v ./..."
+      - "{{ .SYS_GO }} tool cover -func=cover.out"
 
   test:short:
     desc: Run short test
