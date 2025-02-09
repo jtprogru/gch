@@ -26,7 +26,7 @@ func TestCheck(t *testing.T) {
 	// Mock HTTP server.
 	mockResponse := `{"ok": true}`
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		_, _ = w.Write([]byte(mockResponse)) //nolint:errcheck,nonolint // Ignore write errors for test.
+		_, _ = w.Write([]byte(mockResponse)) //nolint:errcheck,nolintlint // Ignore write errors for test.
 	}))
 	defer server.Close()
 
@@ -57,7 +57,7 @@ func TestCheckUserNotInCasList(t *testing.T) {
 	// Mock HTTP server.
 	mockResponse := `{"ok": false}`
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		_, _ = w.Write([]byte(mockResponse)) //nolint:errcheck,nonolint // Ignore write errors for test.
+		_, _ = w.Write([]byte(mockResponse)) //nolint:errcheck,nolintlint // Ignore write errors for test.
 	}))
 	defer server.Close()
 

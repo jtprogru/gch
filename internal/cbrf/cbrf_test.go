@@ -31,7 +31,7 @@ func TestGetShortRates(t *testing.T) {
 	// Set up mock HTTP server.
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(mockResponse)) //nolint:errcheck,nonolint // Ignore write errors for test.
+		_, _ = w.Write([]byte(mockResponse)) //nolint:errcheck,nolintlint // Ignore write errors for test.
 	}))
 	defer server.Close()
 
@@ -71,7 +71,7 @@ func TestGetFullRates(t *testing.T) {
 	// Set up mock HTTP server.
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(mockResponse)) //nolint:errcheck,nonolint // Ignore write errors for test.
+		_, _ = w.Write([]byte(mockResponse)) //nolint:errcheck,nolintlint // Ignore write errors for test.
 	}))
 	defer server.Close()
 
