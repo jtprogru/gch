@@ -10,7 +10,7 @@ import (
 
 func TestGetPasswdLength(t *testing.T) {
 	cfg := Config{
-		Length:         10,
+		Length:         64,
 		IncludeDigits:  false,
 		IncludeSymbols: false,
 	}
@@ -25,7 +25,7 @@ func TestGetPasswdLength(t *testing.T) {
 
 func TestGetPasswdWithDigits(t *testing.T) {
 	cfg := Config{
-		Length:         10,
+		Length:         32,
 		IncludeDigits:  true,
 		IncludeSymbols: false,
 	}
