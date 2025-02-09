@@ -27,7 +27,6 @@ var ErrTokenNotSet = errors.New("environment variable TOKEN_300_YA_RU is not set
 
 // Brief sends a POST request with the given URL to the API and retrieves a sharing URL.
 func Brief(url string) (string, error) {
-
 	// Ensure the token is set in environment variables.
 	token := os.Getenv("TOKEN_300_YA_RU")
 	if token == "" {
