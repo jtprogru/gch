@@ -20,7 +20,13 @@ var (
 				IncludeDigits:  passwdDigits,
 				IncludeSymbols: passwdSpecials,
 			}
-			_, _ = fmt.Println(passwd.GetPasswd(cfg)) //nolint:errcheck,nolintlint // Ignore errors.
+
+			p, err := passwd.GetPasswd(cfg)
+			if err != nil {
+				_, _ = fmt.Println("password generation err: ", err) //nolint:errcheck,nolintlint // Ignore errors.
+				return
+			}
+			_, _ = fmt.Println(p) //nolint:errcheck,nolintlint // Ignore errors.
 		},
 	}
 	passwdLength   int  //nolint:gochecknoglobals,nolintlint // This is normal.
