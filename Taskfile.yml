@@ -74,24 +74,32 @@ tasks:
     deps:
       - precs
     cmds:
-      - task: test.short
-      - task: test.coverage
+      - task test:short
+      - task test:race
+      - task test:coverage
 
-  test.short:
+  test:short:
     desc: Run short test
     deps:
       - precs
     cmds:
       - "{{ .SYS_GO }} test --short -coverprofile=cover.out -v ./..."
 
-  test.coverage:
+  test:coverage:
     desc: Run test coverage
     deps:
       - precs
     cmds:
       - "{{ .SYS_GO }} tool cover -func=cover.out"
 
-  test.watch:
+  test:race:
+    desc: Run tests with race
+    deps:
+      - precs
+    cmds:
+      - "{{ .SYS_GO }} test -race -v ./..."
+
+  test:watch:
     desc: Run tests with watchexec
     deps:
       - precs
