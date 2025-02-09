@@ -24,7 +24,7 @@ Usage:
   gch [command]
 
 Available Commands:
-  breif       Generate a short description for your long URL
+  brief       Generate a short description for your long URL
   cas         A brief description of your command
   cbrf        Get currency exchange rates for RUB/USD and RUB/EUR
   completion  Generate the autocompletion script for the specified shell
