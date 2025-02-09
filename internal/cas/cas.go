@@ -1,6 +1,7 @@
 package cas
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -9,38 +10,40 @@ import (
 	"time"
 )
 
-var (
-	CasApiUrl = "https://api.cas.chat/check"
-)
-
-type CasClient struct {
+type Client struct {
+	baseURL    string
 	verbose    bool
 	httpClient *http.Client
+	timeout    time.Duration
 	logger     *log.Logger
 }
 
-func New(timeout int, verbose bool) *CasClient {
-	return &CasClient{
+func New(timeout int, verbose bool) *Client {
+	return &Client{
+		baseURL: "https://api.cas.chat/check",
 		verbose: verbose,
 		httpClient: &http.Client{
 			Timeout: time.Duration(timeout) * time.Second,
 		},
-		logger: log.New(os.Stderr, "gch-cas-client: ", log.LstdFlags),
+		timeout: time.Duration(timeout) * time.Second,
+		logger:  log.New(os.Stderr, "gch-cas-client: ", log.LstdFlags),
 	}
 }
 
-func (r *CasClient) logf(format string, v ...interface{}) {
+func (r *Client) logf(format string, v ...any) {
 	if r.verbose {
 		r.logger.Printf(format, v...)
 	}
 }
 
-func (r *CasClient) Check(userId uint64) (bool, error) {
-	var casResponse CasResponse
+func (r *Client) Check(userID uint64) (bool, error) {
+	var casResponse Response
+	ctx, cancel := context.WithTimeout(context.Background(), r.timeout)
+	defer cancel()
 
-	url := fmt.Sprintf("%s?user_id=%d", CasApiUrl, userId)
+	url := fmt.Sprintf("%s?user_id=%d", r.baseURL, userID)
 	r.logf("Request URL: %s", url)
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, http.NoBody)
 	if err != nil {
 		r.logf("Error while creating request: %v", err)
 		return false, err
@@ -61,30 +64,29 @@ func (r *CasClient) Check(userId uint64) (bool, error) {
 	}
 
 	if casResponse.Ok {
-		r.logf("User is in the CAS list")
+		r.logf("BAN! User is in the CAS list")
 		return true, nil
-	} else {
-		r.logf("User is not in the CAS list")
-		return false, nil
 	}
+	r.logf("CLEAN! User is not in the CAS list")
+	return false, nil
 }
 
-type CasResponse struct {
+type Response struct {
 	Ok bool `json:"ok"`
 }
 
-type CasResponseTrue struct {
-	Ok     bool      `json:"ok"`
-	Result CasResult `json:"result"`
+type ResponseTrue struct {
+	Ok     bool   `json:"ok"`
+	Result Result `json:"result"`
 }
 
-type CasResult struct {
+type Result struct {
 	Offenses  int       `json:"offenses"`
 	Message   []string  `json:"message"`
 	TimeAdded time.Time `json:"time_added"`
 }
 
-type CasResponseFalse struct {
+type ResponseFalse struct {
 	Ok          bool   `json:"ok"`
 	Description string `json:"description"`
 }
