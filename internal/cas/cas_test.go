@@ -1,10 +1,8 @@
 package cas
 
 import (
-	"log"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
 	"time"
 )
@@ -32,15 +30,8 @@ func TestCheck(t *testing.T) {
 
 	// Override the CasApiUrl with the mock server URL.
 	// Create a new client.
-	logger := log.New(os.Stderr, "test: ", log.LstdFlags)
-	client := &Client{
-		baseURL: server.URL,
-		verbose: true,
-		httpClient: &http.Client{
-			Timeout: 10 * time.Second,
-		},
-		logger: logger,
-	}
+	client := New(10, true)
+	client.baseURL = server.URL
 
 	// Test Check method.
 	userID := uint64(12345)
@@ -63,15 +54,8 @@ func TestCheckUserNotInCasList(t *testing.T) {
 
 	// Override the CasApiUrl with the mock server URL.
 	// Create a new client.
-	logger := log.New(os.Stderr, "test: ", log.LstdFlags)
-	client := &Client{
-		baseURL: server.URL,
-		verbose: true,
-		httpClient: &http.Client{
-			Timeout: 10 * time.Second,
-		},
-		logger: logger,
-	}
+	client := New(10, true)
+	client.baseURL = server.URL
 
 	// Test Check method.
 	userID := uint64(12345)
