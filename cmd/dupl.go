@@ -16,30 +16,29 @@ import (
 const similarityThreshold = 20
 
 var (
-	// duplCmd represents the dupl command
-	duplCmd = &cobra.Command{
+	// duplCmd represents the dupl command.
+	duplCmd = &cobra.Command{ //nolint:gochecknoglobals,nolintlint // This is normal.
 		Use:   "dupl",
 		Short: "Show all duplicates JPG and PNG in folder",
 		Long:  `Show all duplicates JPG and PNG in folder.`,
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(_ *cobra.Command, _ []string) {
 			duplicates, err := findDuplicates(imgPath)
 			if err != nil {
-				fmt.Println("Error:", err)
+				_, _ = fmt.Println("Error:", err) //nolint:errcheck,nolintlint // Ignore errors.
 				return
 			}
 
 			for original, duplicatesList := range duplicates {
-				fmt.Printf("Оригинал: %s\n", original)
-				fmt.Printf("Дубликаты: %s\n", duplicatesList)
+				_, _ = fmt.Printf("Оригинал: %s\n", original)        //nolint:errcheck,nolintlint // Ignore errors.
+				_, _ = fmt.Printf("Дубликаты: %s\n", duplicatesList) //nolint:errcheck,nolintlint // Ignore errors.
 			}
 		},
 	}
-	imgPath string
+	imgPath string //nolint:gochecknoglobals,nolintlint // This is normal.
 )
 
-func init() {
+func init() { //nolint:gochecknoinits,nolintlint // Init func is needed for cobra.
 	rootCmd.AddCommand(duplCmd)
-
 	duplCmd.Flags().StringVarP(&imgPath, "imgPath", "p", ".", "Path to find image duplicates")
 }
 
@@ -63,7 +62,7 @@ func findDuplicates(directory string) (map[string][]string, error) {
 
 		file, err := os.Open(path)
 		if err != nil {
-			fmt.Printf("os open err: %v\n", err.Error())
+			_, _ = fmt.Printf("os open err: %v\n", err.Error()) //nolint:errcheck,nolintlint // Ignore errors.
 			return err
 		}
 		defer file.Close()
@@ -76,17 +75,17 @@ func findDuplicates(directory string) (map[string][]string, error) {
 		}
 
 		if err != nil {
-			fmt.Printf("image decode err: %v\n", err.Error())
+			_, _ = fmt.Printf("image decode err: %v\n", err.Error()) //nolint:errcheck,nolintlint // Ignore errors.
 			return nil
 		}
 
 		imgHash, err := goimagehash.PerceptionHash(img)
 		if err != nil {
-			fmt.Printf("image perception hash err: %v\n", err.Error())
+			_, _ = fmt.Printf("image perception hash err: %v\n", err.Error()) //nolint:errcheck,nolintlint // Ignore errors.
 			return err
 		}
 
-		// find similar images
+		// find similar images.
 		for storedHash, storedPath := range hashes {
 			distance, err := imgHash.Distance(storedHash)
 			if err != nil {

@@ -1,75 +1,115 @@
 package cbrf
 
 import (
+	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
 )
 
-var (
-	cbrfUrl    = "https://www.cbr-xml-daily.ru/daily_json.js"
-	httpClient = &http.Client{Timeout: 10 * time.Second}
+const (
+	defaultTimeout = time.Second * 15
 )
 
-type CbrfValutes struct {
-	Date         time.Time `json:"Date"`
-	PreviousDate time.Time `json:"PreviousDate"`
-	PreviousURL  string    `json:"PreviousURL"`
-	Timestamp    time.Time `json:"Timestamp"`
-	Valute       map[string]struct {
-		Value float64 `json:"Value"`
-	} `json:"Valute"`
-	fetched bool
+// Client basic client for CBRF.
+type Client struct {
+	BaseURL    string
+	HTTPClient *http.Client
+	Timeout    time.Duration
 }
 
-func (er *CbrfValutes) ShortRates() error {
-	if !er.fetched {
-		if err := er.getExchangeRates(); err != nil {
+// NewClient create and configure basic client for CBRF.
+func NewClient() *Client {
+	return &Client{
+		BaseURL: "https://www.cbr-xml-daily.ru/daily_json.js",
+		HTTPClient: &http.Client{
+			Timeout: defaultTimeout,
+		},
+		Timeout: defaultTimeout,
+	}
+}
+
+func (c *Client) GetExchangeRates() (Valutes, error) {
+	valutes := new(Valutes)
+	ctx, cancel := context.WithTimeout(context.Background(), c.Timeout)
+	defer cancel()
+	return *valutes, valutes.getExchangeRates(ctx, c)
+}
+
+type Valutes struct {
+	Date         time.Time                 `json:"date"`
+	PreviousDate time.Time                 `json:"previous_date"`
+	PreviousURL  string                    `json:"previous_url"`
+	Timestamp    time.Time                 `json:"timestamp"`
+	Valute       map[string]CurrencyDetail `json:"valute"`
+	fetched      bool
+}
+
+// CurrencyDetail store information about currency.
+type CurrencyDetail struct {
+	Value float64 `json:"value"`
+}
+
+func (v *Valutes) ShortRates(ctx context.Context, cfg *Client) error {
+	if !v.fetched {
+		if err := v.getExchangeRates(ctx, cfg); err != nil {
 			return err
 		}
 	}
 
-	fmt.Println("Exchange Rates:")
+	_, _ = fmt.Println("Exchange Rates:") //nolint:errcheck,nolintlint // Ignore write errors for test.
 
-	rubUsd, okUsd := er.Valute["USD"]
-	rubEur, okEur := er.Valute["EUR"]
+	rubUsd, okUsd := v.Valute["USD"]
+	rubEur, okEur := v.Valute["EUR"]
 
 	if !okUsd || !okEur {
-		return fmt.Errorf("USD or EUR not found")
+		return errors.New("USD or EUR not found")
 	}
 
-	fmt.Printf("RUB/USD: %.2f\n", rubUsd.Value)
-	fmt.Printf("RUB/EUR: %.2f\n", rubEur.Value)
+	if _, err := fmt.Printf("RUB/USD: %.2f\n", rubUsd.Value); err != nil {
+		return err
+	}
+	if _, err := fmt.Printf("RUB/EUR: %.2f\n", rubEur.Value); err != nil {
+		return err
+	}
 	return nil
 }
 
-func (er *CbrfValutes) FullRates() error {
-	if !er.fetched {
-		if err := er.getExchangeRates(); err != nil {
+func (v *Valutes) FullRates(ctx context.Context, cfg *Client) error {
+	if !v.fetched {
+		if err := v.getExchangeRates(ctx, cfg); err != nil {
 			return err
 		}
 	}
 
-	fmt.Println("Exchange Rates:")
-	for code, currency := range er.Valute {
-		fmt.Printf("RUB/%s: %.2f\n", code, currency.Value)
+	_, _ = fmt.Println("Exchange Rates:") //nolint:errcheck,nolintlint // Ignore write errors for test.
+	for code, currency := range v.Valute {
+		if _, err := fmt.Printf("RUB/%s: %.2f\n", code, currency.Value); err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
-func (er *CbrfValutes) getExchangeRates() error {
-	response, err := httpClient.Get(cbrfUrl)
+func (v *Valutes) getExchangeRates(ctx context.Context, cfg *Client) error {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, cfg.BaseURL, http.NoBody)
+	if err != nil {
+		return err
+	}
+
+	response, err := cfg.HTTPClient.Do(req)
 	if err != nil {
 		return err
 	}
 	defer response.Body.Close()
 
-	if err := json.NewDecoder(response.Body).Decode(er); err != nil {
+	if err := json.NewDecoder(response.Body).Decode(v); err != nil {
 		return err
 	}
 
-	er.fetched = true
+	v.fetched = true
 	return nil
 }

@@ -1,6 +1,9 @@
 # gch
 
+[![CodeQL](https://github.com/jtprogru/gch/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/jtprogru/gch/actions/workflows/github-code-scanning/codeql)
+[![golangci-lint](https://github.com/jtprogru/gch/actions/workflows/lint.yaml/badge.svg)](https://github.com/jtprogru/gch/actions/workflows/lint.yaml)
 [![goreleaser](https://github.com/jtprogru/gch/actions/workflows/goreleaser.yaml/badge.svg)](https://github.com/jtprogru/gch/actions/workflows/goreleaser.yaml)
+[![testing](https://github.com/jtprogru/gch/actions/workflows/tests.yaml/badge.svg)](https://github.com/jtprogru/gch/actions/workflows/tests.yaml)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/jtprogru/gch)
 ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/jtprogru/gch)
 
@@ -24,7 +27,7 @@ Usage:
   gch [command]
 
 Available Commands:
-  breif       Generate a short description for your long URL
+  brief       Generate a short description for your long URL
   cas         A brief description of your command
   cbrf        Get currency exchange rates for RUB/USD and RUB/EUR
   completion  Generate the autocompletion script for the specified shell

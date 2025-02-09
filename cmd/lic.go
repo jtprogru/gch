@@ -9,34 +9,29 @@ import (
 	"github.com/spf13/viper"
 )
 
-var (
-	// cbrfCmd represents the cbrf command
-	licCmd = &cobra.Command{
-		Use:   "lic",
-		Short: "Generate new WTFPL license for you project",
-		Long:  `Just for fun! Generate new WTFPL license for LICENSE file with your email, full name and current year.`,
-		Run: func(cmd *cobra.Command, args []string) {
+// cbrfCmd represents the cbrf command.
+var licCmd = &cobra.Command{ //nolint:gochecknoglobals,nolintlint // This is normal.
+	Use:   "lic",
+	Short: "Generate new WTFPL license for you project",
+	Long:  `Just for fun! Generate new WTFPL license for LICENSE file with your email, full name and current year.`,
+	Run: func(_ *cobra.Command, _ []string) {
+		email := viper.GetString("email")
+		fullName := viper.GetString("full_name")
+		year, _, _ := time.Now().Date()
+		tmpl, err := template.New("wtfpl").Parse(licenseTpl)
+		if err != nil {
+			panic(err)
+		}
 
-			Email := viper.GetString("email")
-			FullName := viper.GetString("full_name")
-			Year, _, _ := time.Now().Date()
-			tmpl, err := template.New("wtfpl").Parse(licenseTpl)
-			if err != nil {
-				panic(err)
-			}
+		err = tmpl.Execute(os.Stdout, data{email, fullName, year})
+		if err != nil {
+			panic(err)
+		}
+	},
+}
 
-			err = tmpl.Execute(os.Stdout, data{Email, FullName, Year})
-			if err != nil {
-				panic(err)
-			}
-		},
-	}
-)
-
-func init() {
+func init() { //nolint:gochecknoinits,nolintlint // Init func is needed for cobra.
 	rootCmd.AddCommand(licCmd)
-
-	// licCmd.Flags().BoolVarP(&showAll, "all", "a", false, "Show all rates")
 }
 
 type data struct {
@@ -45,6 +40,7 @@ type data struct {
 	Year     int
 }
 
+//nolint:gochecknoglobals,nolintlint // This is normal.
 var licenseTpl = `            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
                     Version 2, December 2004
 

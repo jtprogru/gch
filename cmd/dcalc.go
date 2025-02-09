@@ -6,18 +6,19 @@ import (
 	"os"
 	"time"
 
-	"github.com/jtprogru/gch/internal/datescalculator"
 	"github.com/spf13/cobra"
+
+	"github.com/jtprogru/gch/internal/datescalculator"
 )
 
 var (
-	flagDaysCount  int
-	flagDate       string
-	flagJSONOutput bool
+	flagDaysCount  int    //nolint:gochecknoglobals,nolintlint // This is normal.
+	flagDate       string //nolint:gochecknoglobals,nolintlint // This is normal.
+	flagJSONOutput bool   //nolint:gochecknoglobals,nolintlint // This is normal.
 )
 
-// dcalcCmd represents the dcalc command
-var dcalcCmd = &cobra.Command{
+// dcalcCmd represents the dcalc command.
+var dcalcCmd = &cobra.Command{ //nolint:gochecknoglobals,nolintlint // This is normal.
 	Use:   "dcalc",
 	Short: "Calculate dates",
 	Long: `This command calculate "some" days in
@@ -26,7 +27,7 @@ var dcalcCmd = &cobra.Command{
   "some" days from current date.
 
   Usage: gch dcalc -d 2025-02-07 -c 10`,
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		var res *datescalculator.DatesResponse
 		var err error
 		today := time.Now().Format("2006-01-02")
@@ -38,8 +39,8 @@ var dcalcCmd = &cobra.Command{
 		}
 
 		if err != nil {
-			fmt.Printf("Calculate err: %s", err)
-			os.Exit(1)
+			_, _ = fmt.Printf("Calculate err: %s", err) //nolint:errcheck,nolintlint // Ignore errors.
+			os.Exit(1)                                  //nolint:revive,nolintlint // This is normal.
 		}
 
 		if !flagJSONOutput {
@@ -50,7 +51,7 @@ var dcalcCmd = &cobra.Command{
 	},
 }
 
-func init() {
+func init() { //nolint:gochecknoinits,nolintlint // Init func is needed for cobra.
 	rootCmd.AddCommand(dcalcCmd)
 	dcalcCmd.Flags().StringVarP(&flagDate, "date", "d", "", "Date from")
 	dcalcCmd.Flags().IntVarP(&flagDaysCount, "count", "c", 10, "How much days count from date")
@@ -58,13 +59,12 @@ func init() {
 }
 
 func outputInJSON(r *datescalculator.DatesResponse) {
-
-	prettyJSON, _ := json.MarshalIndent(r, "", "  ")
-	fmt.Println(string(prettyJSON))
+	prettyJSON, _ := json.MarshalIndent(r, "", "  ") //nolint:errcheck,nolintlint // Ignore errors.
+	_, _ = fmt.Println(string(prettyJSON))           //nolint:errcheck,nolintlint // Ignore errors.
 }
 
 func outputInText(r *datescalculator.DatesResponse) {
-	fmt.Printf("Date %s +/- %d days:\n", r.Today, flagDaysCount)
-	fmt.Printf("+%d days = %s\n", flagDaysCount, r.FutureDate)
-	fmt.Printf("-%d days = %s\n", flagDaysCount, r.PastDate)
+	_, _ = fmt.Printf("Date %s +/- %d days:\n", r.Today, flagDaysCount) //nolint:errcheck,nolintlint // Ignore errors.
+	_, _ = fmt.Printf("+%d days = %s\n", flagDaysCount, r.FutureDate)   //nolint:errcheck,nolintlint // Ignore errors.
+	_, _ = fmt.Printf("-%d days = %s\n", flagDaysCount, r.PastDate)     //nolint:errcheck,nolintlint // Ignore errors.
 }

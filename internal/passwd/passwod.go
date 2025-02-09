@@ -1,9 +1,8 @@
 package passwd
 
 import (
-	"time"
-
-	"math/rand"
+	"crypto/rand"
+	"math/big"
 )
 
 const (
@@ -20,20 +19,37 @@ const (
 	Symbols = "~!@#$%^&*()_+`-={}|[]\\:\"<>?,./"
 )
 
-var r = *rand.New(rand.NewSource(time.Now().UnixMicro()))
+// Config struct for configuration of GetPasswd.
+type Config struct {
+	Length         int
+	IncludeDigits  bool
+	IncludeSymbols bool
+}
 
-func GetPasswd(passwdLen int, digitFlag bool, specFlag bool) string {
-	var alphabet string
-	var password string = ""
-	alphabet = LowerLetters + UpperLetters
-	if digitFlag {
+// GetPasswd generates a secure password.
+func GetPasswd(cfg Config) (string, error) {
+	var password string
+	alphabet := LowerLetters + UpperLetters
+
+	// Add the required character sets to the alphabet.
+	if cfg.IncludeDigits {
 		alphabet += Digits
 	}
-	if specFlag {
+	if cfg.IncludeSymbols {
 		alphabet += Symbols
 	}
-	for i := 0; i < passwdLen; i++ {
-		password += string(alphabet[r.Intn(len(alphabet))])
+
+	// Generate password.
+	for i := 0; i < cfg.Length; i++ {
+		// Get a secure random index.
+		idx, err := rand.Int(rand.Reader, big.NewInt(int64(len(alphabet))))
+		if err != nil {
+			return "", err
+		}
+
+		// Append the character at the generated index to the password.
+		password += string(alphabet[idx.Int64()])
 	}
-	return password
+
+	return password, nil
 }

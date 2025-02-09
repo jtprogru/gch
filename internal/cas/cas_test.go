@@ -1,17 +1,15 @@
 package cas
 
 import (
-	"log"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
 	"time"
 )
 
 func TestNew(t *testing.T) {
 	client := New(10, true)
-	if client.verbose != true {
+	if !client.verbose {
 		t.Errorf("Expected verbose to be true, got %v", client.verbose)
 	}
 	if client.httpClient.Timeout != 10*time.Second {
@@ -23,29 +21,21 @@ func TestNew(t *testing.T) {
 }
 
 func TestCheck(t *testing.T) {
-	// Mock HTTP server
+	// Mock HTTP server.
 	mockResponse := `{"ok": true}`
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		_, _ = w.Write([]byte(mockResponse))
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		_, _ = w.Write([]byte(mockResponse)) //nolint:errcheck,nolintlint // Ignore write errors for test.
 	}))
 	defer server.Close()
 
-	// Override the CasApiUrl with the mock server URL
-	CasApiUrl = server.URL
+	// Override the CasApiUrl with the mock server URL.
+	// Create a new client.
+	client := New(10, true)
+	client.baseURL = server.URL
 
-	// Create a new client
-	logger := log.New(os.Stderr, "test: ", log.LstdFlags)
-	client := &CasClient{
-		verbose: true,
-		httpClient: &http.Client{
-			Timeout: 10 * time.Second,
-		},
-		logger: logger,
-	}
-
-	// Test Check method
-	userId := uint64(12345)
-	ok, err := client.Check(userId)
+	// Test Check method.
+	userID := uint64(12345)
+	ok, err := client.Check(userID)
 	if err != nil {
 		t.Fatalf("Check() error: %v", err)
 	}
@@ -55,29 +45,21 @@ func TestCheck(t *testing.T) {
 }
 
 func TestCheckUserNotInCasList(t *testing.T) {
-	// Mock HTTP server
+	// Mock HTTP server.
 	mockResponse := `{"ok": false}`
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		_, _ = w.Write([]byte(mockResponse))
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		_, _ = w.Write([]byte(mockResponse)) //nolint:errcheck,nolintlint // Ignore write errors for test.
 	}))
 	defer server.Close()
 
-	// Override the CasApiUrl with the mock server URL
-	CasApiUrl = server.URL
+	// Override the CasApiUrl with the mock server URL.
+	// Create a new client.
+	client := New(10, true)
+	client.baseURL = server.URL
 
-	// Create a new client
-	logger := log.New(os.Stderr, "test: ", log.LstdFlags)
-	client := &CasClient{
-		verbose: true,
-		httpClient: &http.Client{
-			Timeout: 10 * time.Second,
-		},
-		logger: logger,
-	}
-
-	// Test Check method
-	userId := uint64(12345)
-	ok, err := client.Check(userId)
+	// Test Check method.
+	userID := uint64(12345)
+	ok, err := client.Check(userID)
 	if err != nil {
 		t.Fatalf("Check() error: %v", err)
 	}

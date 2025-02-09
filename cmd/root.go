@@ -8,10 +8,10 @@ import (
 	"github.com/spf13/viper"
 )
 
-var cfgFile string
+var cfgFile string //nolint:gochecknoglobals,nolintlint // This is normal.
 
-// rootCmd represents the base command when called without any subcommands
-var rootCmd = &cobra.Command{
+// rootCmd represents the base command when called without any subcommands.
+var rootCmd = &cobra.Command{ //nolint:gochecknoglobals,nolintlint // This is normal.
 	Use:   "gch",
 	Short: "Go CLI Helper",
 	Long: `Go CLI Helper this is a simple CLI utility that helps
@@ -27,11 +27,11 @@ Complete documentation is available at https://github.com/jtprogru/gch/wiki`,
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
-		os.Exit(1)
+		os.Exit(1) //nolint:revive,nolintlint // This is normal.
 	}
 }
 
-func init() {
+func init() { //nolint:gochecknoinits,nolintlint // Init func is needed for cobra.
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.gch.yaml)")
@@ -53,11 +53,11 @@ func initConfig() {
 		viper.SetConfigType("yaml")
 	}
 
-	viper.AutomaticEnv() // read in environment variables that match
+	viper.AutomaticEnv() // read in environment variables that match.
 
 	// If a config file is found, read it in.
 	err := viper.ReadInConfig()
 	if err != nil {
-		fmt.Printf("Error loading config: %s", err)
+		_, _ = fmt.Printf("Error loading config: %s", err) //nolint:errcheck,nolintlint // Ignore errors.
 	}
 }
