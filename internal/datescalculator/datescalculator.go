@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-var ErrIncorrectDateFormat = errors.New("Incorrect date format! Use 2006-01-02")
+var ErrIncorrectDateFormat = errors.New("incorrect date format! Use 2006-01-02")
 
 const defaultDateFormat = "2006-01-02"
 
