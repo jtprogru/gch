@@ -5,17 +5,18 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/jtprogru/gch/internal/cas"
 	"github.com/spf13/cobra"
+
+	"github.com/jtprogru/gch/internal/cas"
 )
 
 var (
-	defaultTimeout = 15
-	verbose        bool
+	defaultTimeout = 15 //nolint:gochecknoglobals,nolintlint // This is normal.
+	verbose        bool //nolint:gochecknoglobals,nolintlint // This is normal.
 )
 
-// casCmd represents the cas command
-var casCmd = &cobra.Command{
+// casCmd represents the cas command.
+var casCmd = &cobra.Command{ //nolint:gochecknoglobals,nolintlint // This is normal.
 	Use:   "cas",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
@@ -24,39 +25,30 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, args []string) {
 		casClinet := cas.New(defaultTimeout, verbose)
 		if len(args) < 1 {
-			fmt.Println("Please provide a user id")
-			os.Exit(1)
+			_, _ = fmt.Println("Please provide a user id") //nolint:errcheck,nolintlint // Ignore errors.
+			os.Exit(1)                                     //nolint:revive,nolintlint // This is normal.
 		}
-		userId, err := strconv.ParseUint(args[0], 10, 64)
+		userID, err := strconv.ParseUint(args[0], 10, 64)
 		if err != nil {
-			fmt.Println("Invalid user id! Please provide a number")
+			_, _ = fmt.Println("Invalid user id! Please provide a number") //nolint:errcheck,nolintlint // Ignore errors.
 		}
-		status, err := casClinet.Check(userId)
+		status, err := casClinet.Check(userID)
 		if err != nil {
-			fmt.Println("Error while checking user status")
-			os.Exit(1)
+			_, _ = fmt.Println("Error while checking user status") //nolint:errcheck,nolintlint // Ignore errors.
+			os.Exit(1)                                             //nolint:revive,nolintlint // This is normal.
 		}
 		if !status {
-			fmt.Println("👎 User is not in the CAS list")
+			_, _ = fmt.Println("✅ User is not in the CAS list") //nolint:errcheck,nolintlint // Ignore errors.
 		} else {
-			fmt.Println("👍 User is in the CAS list")
+			_, _ = fmt.Println("⛔ User is in the CAS list") //nolint:errcheck,nolintlint // Ignore errors.
 		}
 	},
 }
 
-func init() {
+func init() { //nolint:gochecknoinits,nolintlint // Init func is needed for cobra.
 	rootCmd.AddCommand(casCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// casCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
 	casCmd.Flags().BoolVarP(&verbose, "verbode", "v", false, "Help message for toggle")
 }
