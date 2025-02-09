@@ -6,16 +6,6 @@ vars:
   HOME:
     sh: echo $HOME
   BINARY_NAME: gch
-  SYS_GO:
-    sh: which go
-  SYS_GOFMT:
-    sh: which gofmt
-  SYS_GOLANGCI_LINT:
-    sh: which golangci-lint
-  SYS_GOIMPORTS:
-    sh: which goimports
-  SYS_WATCHEXEC:
-    sh: which watchexec
 
 tasks:
   default:
@@ -23,17 +13,15 @@ tasks:
       - task --list
     silent: true
 
-  run.cmd:
+  run:cmd:
     desc: Run as go run main.go
-    deps:
-      - precs
     cmds:
-      - "{{ .SYS_GO }} run main.go {{ .CLI_ARGS }}"
+      - "go run main.go {{ .CLI_ARGS }}"
 
-  run.bin:
+  run:bin:
     desc: Run as binary
     deps:
-      - build.bin
+      - build:bin
     cmds:
       - "{{ .HOME }}/go/bin/{{ .BINARY_NAME }} {{ .CLI_ARGS }}"
 
@@ -44,84 +32,60 @@ tasks:
     preconditions:
       - test -f go.mod
     cmds:
-      - "{{ .SYS_GO }} mod tidy"
+      - "go mod tidy"
 
-  build.bin:
+  build:bin:
     desc: Build bin file from go
-    deps:
-      - precs
     preconditions:
       - test -f main.go
     cmds:
-      - "{{ .SYS_GO }} mod download"
-      - "CGO_ENABLED=0 {{ .SYS_GO }} build -o {{ .HOME }}/go/bin/{{ .BINARY_NAME }} main.go"
+      - "go mod download"
+      - "CGO_ENABLED=0 go build -o {{ .HOME }}/go/bin/{{ .BINARY_NAME }} main.go"
 
   fmt:
     desc: Run go fmt
     cmds:
-      - "{{ .SYS_GOFMT }} -s -w ."
-      - "{{ .SYS_GOIMPORTS }} -format-only -d -l -v -w ."
+      - "gofmt -s -w ."
+      - "goimports -format-only -d -l -v -w ."
 
   vet:
     desc: Run go vet ./...
-    deps:
-      - precs
     cmds:
-      - "{{ .SYS_GO }} vet ./..."
+      - "go vet ./..."
 
   test:
     desc: Run all test
     cmds:
-      - "{{ .SYS_GO }} test --short -coverprofile=cover.out -v ./..."
-      - "{{ .SYS_GO }} test -race -v ./..."
-      - "{{ .SYS_GO }} tool cover -func=cover.out"
+      - "go test -coverprofile=cover.out -v ./..."
+      - task test:race
+      - task test:coverage
 
   test:short:
     desc: Run short test
-    deps:
-      - precs
     cmds:
-      - "{{ .SYS_GO }} test --short -coverprofile=cover.out -v ./..."
+      - "go test --short -coverprofile=cover.out -v ./..."
 
   test:coverage:
     desc: Run test coverage
-    deps:
-      - precs
     cmds:
-      - "{{ .SYS_GO }} tool cover -func=cover.out"
+      - "go tool cover -func=cover.out"
 
   test:race:
     desc: Run tests with race
-    deps:
-      - precs
     cmds:
-      - "{{ .SYS_GO }} test -race -v ./..."
+      - "go test -race -v ./..."
 
   test:watch:
     desc: Run tests with watchexec
-    deps:
-      - precs
     cmds:
-      - "{{ .SYS_WATCHEXEC }} -c clear -o do-nothing -d 100ms --exts go 'pkg=\".${WATCHEXEC_COMMON_PATH/$PWD/}/...\"; echo \"running tests for $pkg\"; go test \"$pkg\"'"
+      - "watchexec -c clear -o do-nothing -d 100ms --exts go 'pkg=\".${WATCHEXEC_COMMON_PATH/$PWD/}/...\"; echo \"running tests for $pkg\"; go test \"$pkg\"'"
 
   lint:
     desc: Run golangci-lint
-    deps:
-      - precs
     cmds:
-      - "{{ .SYS_GOLANGCI_LINT }} -v run --out-format=colored-line-number"
+      - "golangci-lint -v run --out-format=colored-line-number"
 
   install:
     desc: Build and install localy
-    deps:
-      - precs
     cmds:
-      - "{{ .SYS_GO }} install"
-
-  precs:
-    desc: All preconditions
-    preconditions:
-      - test -f $(which go)
-      - test -f $(which golangci-lint)
-      - test -f $(which watchexec)
-    internal: true
+      - "go install"
