@@ -15,7 +15,12 @@ var (
 		Short: "Generate random password",
 		Long:  `Simple password generations`,
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println(passwd.GetPasswd(passwdLength, passwdDigits, passwdSpecials))
+			cfg := passwd.Config{
+				Length:         passwdLength,
+				IncludeDigits:  passwdDigits,
+				IncludeSymbols: passwdSpecials,
+			}
+			fmt.Println(passwd.GetPasswd(cfg))
 		},
 	}
 	passwdLength   int
