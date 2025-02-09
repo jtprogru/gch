@@ -2,34 +2,33 @@ package cmd
 
 import (
 	"fmt"
-	"math/rand"
+
+	"github.com/spf13/cobra"
 
 	"github.com/jtprogru/gch/internal/passwd"
-	"github.com/spf13/cobra"
 )
 
-// passwdCmd represents the passwd command
+// passwdCmd represents the passwd command.
 var (
-	passwdCmd = &cobra.Command{
+	passwdCmd = &cobra.Command{ //nolint:gochecknoglobals,nolintlint // This is normal.
 		Use:   "passwd",
 		Short: "Generate random password",
 		Long:  `Simple password generations`,
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(_ *cobra.Command, _ []string) {
 			cfg := passwd.Config{
 				Length:         passwdLength,
 				IncludeDigits:  passwdDigits,
 				IncludeSymbols: passwdSpecials,
 			}
-			fmt.Println(passwd.GetPasswd(cfg))
+			_, _ = fmt.Println(passwd.GetPasswd(cfg)) //nolint:errcheck,nolintlint // Ignore errors.
 		},
 	}
-	passwdLength   int
-	passwdDigits   bool
-	passwdSpecials bool
-	r              rand.Rand
+	passwdLength   int  //nolint:gochecknoglobals,nolintlint // This is normal.
+	passwdDigits   bool //nolint:gochecknoglobals,nolintlint // This is normal.
+	passwdSpecials bool //nolint:gochecknoglobals,nolintlint // This is normal.
 )
 
-func init() {
+func init() { //nolint:gochecknoinits,nolintlint // Init func is needed for cobra.
 	rootCmd.AddCommand(passwdCmd)
 	passwdCmd.Flags().IntVarP(&passwdLength, "length", "l", 24, "Length of password")
 	passwdCmd.Flags().BoolVarP(&passwdDigits, "digits", "d", false, "Present digits in password")
