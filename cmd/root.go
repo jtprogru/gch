@@ -8,7 +8,10 @@ import (
 	"github.com/spf13/viper"
 )
 
-var cfgFile string //nolint:gochecknoglobals,nolintlint // This is normal.
+var cfgFile string   //nolint:gochecknoglobals,nolintlint // This is normal.
+var showVersion bool //nolint:gochecknoglobals,nolintlint // This is normal.
+
+var version = "dev"
 
 // rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{ //nolint:gochecknoglobals,nolintlint // This is normal.
@@ -20,6 +23,7 @@ make my life easier and will be gradually supplemented with various functionalit
 Now gch is not able to do so much, but I use it every day.
 
 Complete documentation is available at https://github.com/jtprogru/gch/wiki`,
+	Version: version,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -33,7 +37,6 @@ func Execute() {
 
 func init() { //nolint:gochecknoinits,nolintlint // Init func is needed for cobra.
 	cobra.OnInitialize(initConfig)
-
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.gch.yaml)")
 }
 
