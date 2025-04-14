@@ -30,12 +30,6 @@ func New(timeout int, verbose bool) *Client {
 	}
 }
 
-func (r *Client) logf(format string, v ...any) {
-	if r.verbose {
-		r.logger.Printf(format, v...)
-	}
-}
-
 func (r *Client) Check(userID uint64) (bool, error) {
 	var casResponse Response
 	ctx, cancel := context.WithTimeout(context.Background(), r.timeout)
@@ -83,10 +77,16 @@ type ResponseTrue struct {
 type Result struct {
 	Offenses  int       `json:"offenses"`
 	Message   []string  `json:"message"`
-	TimeAdded time.Time `json:"time_added"`
+	TimeAdded time.Time `json:"time_added"` //nolint:tagliatelle // This is predefined by the API.
 }
 
 type ResponseFalse struct {
 	Ok          bool   `json:"ok"`
 	Description string `json:"description"`
+}
+
+func (r *Client) logf(format string, v ...any) {
+	if r.verbose {
+		r.logger.Printf(format, v...)
+	}
 }
