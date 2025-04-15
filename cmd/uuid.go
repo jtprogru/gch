@@ -7,25 +7,25 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// uuidCmd represents the uuid command
 var (
-	uuidCmd = &cobra.Command{
+	// uuidCmd represents the uuid command.
+	uuidCmd = &cobra.Command{ //nolint:gochecknoglobals,nolintlint // This is normal.
 		Use:   "uuid",
 		Short: "Generate UUID string",
 		Long: `A UUID is a 16 byte (128 bit) array.
 UUIDs may be used as keys to maps or compared directly.`,
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(_ *cobra.Command, _ []string) {
 			fmt.Println(GetUUID())
 		},
 	}
-	v4UUID    bool
-	v5UUID    bool
-	nilUUID   bool
-	namespace = uuid.NameSpaceURL
-	url       = []byte("https://jtprog.ru")
+	v4UUID    bool                          //nolint:gochecknoglobals,nolintlint // This is normal.
+	v5UUID    bool                          //nolint:gochecknoglobals,nolintlint // This is normal.
+	nilUUID   bool                          //nolint:gochecknoglobals,nolintlint // This is normal.
+	namespace = uuid.NameSpaceURL           //nolint:gochecknoglobals,nolintlint // This is normal.
+	url       = []byte("https://jtprog.ru") //nolint:gochecknoglobals,nolintlint // This is normal.
 )
 
-func init() {
+func init() { //nolint:gochecknoinits,nolintlint // Init func is needed for cobra.
 	rootCmd.AddCommand(uuidCmd)
 	uuidCmd.Flags().BoolVarP(&v4UUID, "v4", "4", true, "Generate UUID4")
 	uuidCmd.Flags().BoolVarP(&v5UUID, "v5", "5", false, "Generate UUID5")
