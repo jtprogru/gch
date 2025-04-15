@@ -12,9 +12,9 @@ var (
 	cfgFile     string //nolint:gochecknoglobals,nolintlint // This is normal.
 	showVersion bool   //nolint:gochecknoglobals,nolintlint // This is normal.
 	version     = "dev"
-	commit      = "none"
-	date        = "today"
-	builtBy     = "go build"
+	commit      = "none"     //nolint:gochecknoglobals,nolintlint // This is normal.
+	date        = "today"    //nolint:gochecknoglobals,nolintlint // This is normal.
+	builtBy     = "go build" //nolint:gochecknoglobals,nolintlint // This is normal.
 )
 
 // rootCmd represents the base command when called without any subcommands.
