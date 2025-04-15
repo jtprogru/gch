@@ -1,72 +1,53 @@
 version: 2
-# This is an example .goreleaser.yml file with some sensible defaults.
-# Make sure to check the documentation at https://goreleaser.com
+
 before:
   hooks:
-    # You may remove this if you don't use go modules.
     - go mod tidy
 
 builds:
   - id: gch
+    main: main.go
+    binary: gch
     env:
       - CGO_ENABLED=0
-          # complex, templated envs:
-      - >-
-        {{- if eq .Os "darwin" }}
-          {{- if eq .Arch "amd64"}}CC=o64-clang{{- end }}
-          {{- if eq .Arch "arm64"}}CC=aarch64-apple-darwin20.2-clang{{- end }}
-        {{- end }}
-        {{- if eq .Os "windows" }}
-          {{- if eq .Arch "amd64" }}CC=x86_64-w64-mingw32-gcc{{- end }}
-        {{- end }}
     goos:
       - linux
       - windows
       - darwin
       - freebsd
-    goamd64:
-      - v1
-      - v2
-      - v3
+    goarch:
+      - amd64
+      - arm64
     goarm:
       - "6"
       - "7"
-    goarm64:
-      - v8.0
-      - v9.0
-    # List of combinations of GOOS + GOARCH + GOARM to ignore.
-    ignore:
-      - goos: darwin
-        goarch: "386"
-
-
-    # Custom ldflags.
-    # For more info refer to: https://pkg.go.dev/cmd/go#hdr-Compile_packages_and_dependencies
-    # and https://pkg.go.dev/cmd/link
-    #
-    # Default: '-s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser'.
-    # Templates: allowed.
     ldflags:
-      - -s -w -X github.com/jtprogru/gch/cmd.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser
+      - -s -w -X github.com/jtprogru/gch/cmd.version={{.Version}} -X github.com/jtprogru/gch/cmd.commit={{.Commit}} -X github.com/jtprogru/gch/cmd.date={{.CommitDate}} -X github.com/jtprogru/gch/cmd.builtBy=goreleaser
+    builder: go
 
 archives:
-  - format: tar.gz
+  - formats: [ 'tar.gz' ]
     # this name template makes the OS and Arch compatible with the results of uname.
     name_template: >-
       {{ .ProjectName }}_
       {{- title .Os }}_
       {{- if eq .Arch "amd64" }}x86_64
-      {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
       {{- if .Arm }}v{{ .Arm }}{{ end }}
     # use zip for windows archives
     format_overrides:
-    - goos: windows
-      format: zip
+      - goos: windows
+        formats: [ 'zip' ]
+    files:
+      - LICENSE
+      - README.md
+
 checksum:
   name_template: 'checksums.txt'
+
 snapshot:
-  name_template: "{{ incpatch .Version }}-next"
+  version_template: "{{ incpatch .Version }}-next"
+
 changelog:
   sort: asc
   filters:
