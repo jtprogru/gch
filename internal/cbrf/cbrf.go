@@ -40,8 +40,8 @@ func (c *Client) GetExchangeRates() (Valutes, error) {
 
 type Valutes struct {
 	Date         time.Time                 `json:"date"`
-	PreviousDate time.Time                 `json:"previous_date"`
-	PreviousURL  string                    `json:"previous_url"`
+	PreviousDate time.Time                 `json:"previous_date"` //nolint:tagliatelle // This is predefined by the API
+	PreviousURL  string                    `json:"previous_url"`  //nolint:tagliatelle // This is predefined by the API
 	Timestamp    time.Time                 `json:"timestamp"`
 	Valute       map[string]CurrencyDetail `json:"valute"`
 	fetched      bool

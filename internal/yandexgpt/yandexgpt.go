@@ -20,7 +20,7 @@ const (
 // Response represents the expected JSON response from the API.
 type Response struct {
 	Status     string `json:"status"`
-	SharingURL string `json:"sharing_url"`
+	SharingURL string `json:"sharing_url"` //nolint:tagliatelle // This is predefined by the API
 }
 
 var ErrTokenNotSet = errors.New("environment variable TOKEN_300_YA_RU is not set")
