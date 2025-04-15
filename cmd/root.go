@@ -8,10 +8,14 @@ import (
 	"github.com/spf13/viper"
 )
 
-var cfgFile string   //nolint:gochecknoglobals,nolintlint // This is normal.
-var showVersion bool //nolint:gochecknoglobals,nolintlint // This is normal.
-
-var version = "dev"
+var (
+	cfgFile     string //nolint:gochecknoglobals,nolintlint // This is normal.
+	showVersion bool   //nolint:gochecknoglobals,nolintlint // This is normal.
+	version     = "dev"
+	commit      = "none"
+	date        = "today"
+	builtBy     = "go build"
+)
 
 // rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{ //nolint:gochecknoglobals,nolintlint // This is normal.
@@ -32,6 +36,9 @@ func Execute() {
 
 	if showVersion {
 		fmt.Println("gch version:", version)
+		fmt.Println("from commit:", commit)
+		fmt.Println("built date:", date)
+		fmt.Println("built by:", builtBy)
 		os.Exit(0)
 	}
 	// Execute the root command.
