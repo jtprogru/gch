@@ -29,6 +29,12 @@ Complete documentation is available at https://github.com/jtprogru/gch/wiki`,
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
+
+	if showVersion {
+		fmt.Println("gch version:", version)
+		os.Exit(0)
+	}
+	// Execute the root command.
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1) //nolint:revive,nolintlint // This is normal.
@@ -38,6 +44,7 @@ func Execute() {
 func init() { //nolint:gochecknoinits,nolintlint // Init func is needed for cobra.
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.gch.yaml)")
+	rootCmd.PersistentFlags().BoolVarP(&showVersion, "version", "v", false, "Show version")
 }
 
 // initConfig reads in config file and ENV variables if set.
