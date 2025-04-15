@@ -8,6 +8,8 @@ import (
 	"time"
 )
 
+const exampleBaseURL = "https://example.com"
+
 func TestGetShortRates(t *testing.T) {
 	// Mock HTTP server response for short rates.
 	mockResponse := `{
@@ -99,7 +101,7 @@ func TestGetFullRates(t *testing.T) {
 	}
 }
 
-func TestShortRates_Success(t *testing.T) {
+func TestShortRatesSuccess(t *testing.T) {
 	// Создаем тестовые данные
 	valutes := &Valutes{
 		Valute: map[string]CurrencyDetail{
@@ -108,9 +110,8 @@ func TestShortRates_Success(t *testing.T) {
 		},
 		fetched: true,
 	}
-
 	client := &Client{
-		BaseURL: "https://example.com",
+		BaseURL: exampleBaseURL,
 		HTTPClient: &http.Client{
 			Timeout: time.Second * 5,
 		},
@@ -123,7 +124,7 @@ func TestShortRates_Success(t *testing.T) {
 	}
 }
 
-func TestShortRates_MissingCurrencies(t *testing.T) {
+func TestShortRatesMissingCurrencies(t *testing.T) {
 	// Создаем тестовые данные без USD и EUR
 	valutes := &Valutes{
 		Valute: map[string]CurrencyDetail{
@@ -133,7 +134,7 @@ func TestShortRates_MissingCurrencies(t *testing.T) {
 	}
 
 	client := &Client{
-		BaseURL: "https://example.com",
+		BaseURL: exampleBaseURL,
 		HTTPClient: &http.Client{
 			Timeout: time.Second * 5,
 		},
@@ -146,7 +147,7 @@ func TestShortRates_MissingCurrencies(t *testing.T) {
 	}
 }
 
-func TestShortRates_FetchError(t *testing.T) {
+func TestShortRatesFetchError(t *testing.T) {
 	// Создаем тестовые данные, чтобы вызвать ошибку при fetch
 	valutes := &Valutes{
 		Valute:  map[string]CurrencyDetail{},
@@ -167,7 +168,7 @@ func TestShortRates_FetchError(t *testing.T) {
 	}
 }
 
-func TestShortRates_PrintError(t *testing.T) {
+func TestShortRatesPrintError(t *testing.T) {
 	// Создаем тестовые данные с некорректными значениями
 	valutes := &Valutes{
 		Valute: map[string]CurrencyDetail{
@@ -178,7 +179,7 @@ func TestShortRates_PrintError(t *testing.T) {
 	}
 
 	client := &Client{
-		BaseURL: "https://example.com",
+		BaseURL: exampleBaseURL,
 		HTTPClient: &http.Client{
 			Timeout: time.Second * 5,
 		},
