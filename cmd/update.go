@@ -3,20 +3,22 @@ package cmd
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/spf13/cobra"
 )
 
 // updateCmd represents the update command.
-var updateCmd = &cobra.Command{
+var updateCmd = &cobra.Command{ //nolint:gochecknoglobals,nolintlint // This is normal.
 	Use:   "update",
 	Short: "Update gch",
 	Long:  `Check available update and upgrade gch.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(cmd *cobra.Command, _ []string) {
 		ctx := context.Background()
 		latestVersion, downloadURL, err := getLatestRelease(ctx, "jtprogru/gch")
 		if err != nil {
@@ -46,9 +48,9 @@ var updateCmd = &cobra.Command{
 	},
 }
 
-var update bool
+var update bool //nolint:gochecknoglobals,nolintlint // This is normal.
 
-func init() {
+func init() { //nolint:gochecknoinits,nolintlint // Init func is needed for cobra.
 	rootCmd.AddCommand(updateCmd)
 	updateCmd.Flags().BoolVarP(&update, "upgrade", "u", false, "Upgrade gch")
 }
@@ -73,9 +75,9 @@ func getLatestRelease(ctx context.Context, repo string) (string, string, error) 
 	}
 
 	var release struct {
-		TagName string `json:"tag_name"`
+		TagName string `json:"tag_name"` //nolint:tagliatelle // This is predefined by the API.
 		Assets  []struct {
-			BrowserDownloadURL string `json:"browser_download_url"`
+			BrowserDownloadURL string `json:"browser_download_url"` //nolint:tagliatelle // This is predefined by the API.
 		} `json:"assets"`
 	}
 
@@ -90,7 +92,7 @@ func getLatestRelease(ctx context.Context, repo string) (string, string, error) 
 	}
 
 	if len(release.Assets) == 0 {
-		return "", "", fmt.Errorf("no assets found for the latest release")
+		return "", "", errors.New("no assets found for the latest release")
 	}
 
 	return release.TagName, release.Assets[0].BrowserDownloadURL, nil
@@ -98,8 +100,19 @@ func getLatestRelease(ctx context.Context, repo string) (string, string, error) 
 
 // downloadAndInstall downloads the latest release and installs it.
 func downloadAndInstall(downloadURL string) error {
-	// Download the file
-	resp, err := http.Get(downloadURL)
+	// Создаем контекст с таймаутом
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	// Создаем HTTP-запрос с контекстом
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, downloadURL, nil)
+	if err != nil {
+		return err
+	}
+
+	// Выполняем запрос
+	client := &http.Client{}
+	resp, err := client.Do(req)
 	if err != nil {
 		return err
 	}
@@ -109,7 +122,7 @@ func downloadAndInstall(downloadURL string) error {
 		return fmt.Errorf("failed to download file: %s", resp.Status)
 	}
 
-	// Create a temporary file
+	// Создаем временный файл
 	tmpFile, err := os.CreateTemp("", "gch-*")
 	if err != nil {
 		return err
@@ -121,13 +134,13 @@ func downloadAndInstall(downloadURL string) error {
 		return err
 	}
 
-	// Make the file executable
+	// Делаем файл исполняемым
 	err = os.Chmod(tmpFile.Name(), 0755)
 	if err != nil {
 		return err
 	}
 
-	// Replace the current binary
+	// Заменяем текущий бинарный файл
 	execPath, err := os.Executable()
 	if err != nil {
 		return err
