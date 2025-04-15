@@ -6,6 +6,8 @@ vars:
   HOME:
     sh: echo $HOME
   BINARY_NAME: gch
+  GOPATH:
+    sh: echo $GOPATH
 
 tasks:
   default:
@@ -23,7 +25,7 @@ tasks:
     deps:
       - build:bin
     cmds:
-      - "{{ .HOME }}/go/bin/{{ .BINARY_NAME }} {{ .CLI_ARGS }}"
+      - "./dist/{{ .BINARY_NAME }} {{ .CLI_ARGS }}"
 
   tidy:
     desc: Install all requirements
@@ -40,7 +42,7 @@ tasks:
       - test -f main.go
     cmds:
       - "go mod download"
-      - "CGO_ENABLED=0 go build -o {{ .HOME }}/go/bin/{{ .BINARY_NAME }} main.go"
+      - "CGO_ENABLED=0 go build -o ./dist/{{ .BINARY_NAME }} main.go"
 
   fmt:
     desc: Run go fmt
@@ -85,7 +87,15 @@ tasks:
     cmds:
       - "golangci-lint -v run"
 
-  install:
-    desc: Build and install localy
+  install:global:
+    desc: Build and install globally
     cmds:
       - "go install"
+
+  install:dev:
+    desc: Build bin file from go and install to
+    preconditions:
+      - test -f main.go
+    cmds:
+      - "go mod download"
+      - "CGO_ENABLED=0 go build -o {{ .GOPATH }}/bin/{{ .BINARY_NAME }} main.go"

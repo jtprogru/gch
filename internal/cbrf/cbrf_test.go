@@ -1,10 +1,14 @@
 package cbrf
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 )
+
+const exampleBaseURL = "https://example.com"
 
 func TestGetShortRates(t *testing.T) {
 	// Mock HTTP server response for short rates.
@@ -94,5 +98,96 @@ func TestGetFullRates(t *testing.T) {
 	}
 	if gbp, ok := rates.Valute["GBP"]; !ok || gbp.Value != 102.34 {
 		t.Errorf("Invalid GBP rate. Got: %v, Expected: 102.34", gbp.Value)
+	}
+}
+
+func TestShortRatesSuccess(t *testing.T) {
+	// Создаем тестовые данные
+	valutes := &Valutes{
+		Valute: map[string]CurrencyDetail{
+			"USD": {Value: 75.50},
+			"EUR": {Value: 85.30},
+		},
+		fetched: true,
+	}
+	client := &Client{
+		BaseURL: exampleBaseURL,
+		HTTPClient: &http.Client{
+			Timeout: time.Second * 5,
+		},
+	}
+
+	// Выполняем тест
+	err := valutes.ShortRates(context.Background(), client)
+	if err != nil {
+		t.Fatalf("expected no error, got %v", err)
+	}
+}
+
+func TestShortRatesMissingCurrencies(t *testing.T) {
+	// Создаем тестовые данные без USD и EUR
+	valutes := &Valutes{
+		Valute: map[string]CurrencyDetail{
+			"GBP": {Value: 100.00},
+		},
+		fetched: true,
+	}
+
+	client := &Client{
+		BaseURL: exampleBaseURL,
+		HTTPClient: &http.Client{
+			Timeout: time.Second * 5,
+		},
+	}
+
+	// Выполняем тест
+	err := valutes.ShortRates(context.Background(), client)
+	if err == nil || err.Error() != "USD or EUR not found" {
+		t.Fatalf("expected error 'USD or EUR not found', got %v", err)
+	}
+}
+
+func TestShortRatesFetchError(t *testing.T) {
+	// Создаем тестовые данные, чтобы вызвать ошибку при fetch
+	valutes := &Valutes{
+		Valute:  map[string]CurrencyDetail{},
+		fetched: false,
+	}
+
+	client := &Client{
+		BaseURL: "https://invalid-url", // Некорректный URL для вызова ошибки
+		HTTPClient: &http.Client{
+			Timeout: time.Second * 5,
+		},
+	}
+
+	// Выполняем тест
+	err := valutes.ShortRates(context.Background(), client)
+	if err == nil {
+		t.Fatalf("expected an error, got nil")
+	}
+}
+
+func TestShortRatesPrintError(t *testing.T) {
+	// Создаем тестовые данные с некорректными значениями
+	valutes := &Valutes{
+		Valute: map[string]CurrencyDetail{
+			"USD": {Value: 0},
+			"EUR": {Value: 0},
+		},
+		fetched: true,
+	}
+
+	client := &Client{
+		BaseURL: exampleBaseURL,
+		HTTPClient: &http.Client{
+			Timeout: time.Second * 5,
+		},
+	}
+
+	// Перехватываем вывод, чтобы проверить ошибки
+	err := valutes.ShortRates(context.Background(), client)
+	if err != nil {
+		t.Fatalf("expected no error, got %v", err)
 	}
 }
