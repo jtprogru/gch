@@ -51,7 +51,7 @@ func Execute() {
 func init() { //nolint:gochecknoinits,nolintlint // Init func is needed for cobra.
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.gch.yaml)")
-	rootCmd.PersistentFlags().BoolVarP(&showVersion, "version", "v", false, "Show version")
+	rootCmd.PersistentFlags().BoolVarP(&showVersion, "version", "V", false, "Show version")
 }
 
 // initConfig reads in config file and ENV variables if set.
