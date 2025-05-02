@@ -50,5 +50,5 @@ to quickly create a Cobra application.`,
 
 func init() { //nolint:gochecknoinits,nolintlint // Init func is needed for cobra.
 	rootCmd.AddCommand(casCmd)
-	casCmd.Flags().BoolVarP(&verbose, "verbode", "v", false, "Help message for toggle")
+	casCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Verbose output")
 }
