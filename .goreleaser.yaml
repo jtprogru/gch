@@ -12,7 +12,6 @@ builds:
       - CGO_ENABLED=0
     goos:
       - linux
-      - windows
       - darwin
       - freebsd
     goarch:
@@ -22,11 +21,11 @@ builds:
       - "6"
       - "7"
     ldflags:
-      - -s -w -X github.com/jtprogru/gch/cmd.version={{.Version}} -X github.com/jtprogru/gch/cmd.commit={{.Commit}} -X github.com/jtprogru/gch/cmd.date={{.CommitDate}} -X github.com/jtprogru/gch/cmd.builtBy=goreleaser
+      - -s -w -X github.com/jtprogru/gch/cmd.Version={{.Version}} -X github.com/jtprogru/gch/cmd.Commit={{.Commit}} -X github.com/jtprogru/gch/cmd.Date={{.CommitDate}} -X github.com/jtprogru/gch/cmd.BuiltBy=goreleaser
     builder: go
 
 archives:
-  - formats: [ 'tar.gz' ]
+  - formats: ["tar.gz"]
     # this name template makes the OS and Arch compatible with the results of uname.
     name_template: >-
       {{ .ProjectName }}_
@@ -37,13 +36,13 @@ archives:
     # use zip for windows archives
     format_overrides:
       - goos: windows
-        formats: [ 'zip' ]
+        formats: ["zip"]
     files:
       - LICENSE
       - README.md
 
 checksum:
-  name_template: 'checksums.txt'
+  name_template: "checksums.txt"
 
 snapshot:
   version_template: "{{ incpatch .Version }}-next"
@@ -52,8 +51,8 @@ changelog:
   sort: asc
   filters:
     exclude:
-      - '^docs:'
-      - '^test:'
+      - "^docs:"
+      - "^test:"
 
 signs:
   - artifacts: checksum

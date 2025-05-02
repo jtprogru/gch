@@ -9,12 +9,12 @@ import (
 )
 
 var (
-	cfgFile     string //nolint:gochecknoglobals,nolintlint // This is normal.
-	showVersion bool   //nolint:gochecknoglobals,nolintlint // This is normal.
-	version     = "dev"
-	commit      = "none"     //nolint:gochecknoglobals,nolintlint // This is normal.
-	date        = "today"    //nolint:gochecknoglobals,nolintlint // This is normal.
-	builtBy     = "go build" //nolint:gochecknoglobals,nolintlint // This is normal.
+	cfgFile     string       //nolint:gochecknoglobals,nolintlint // This is normal.
+	showVersion bool         //nolint:gochecknoglobals,nolintlint // This is normal.
+	Version     = "dev"      //nolint:gochecknoglobals,nolintlint // This is normal.
+	Commit      = "none"     //nolint:gochecknoglobals,nolintlint // This is normal.
+	Date        = "today"    //nolint:gochecknoglobals,nolintlint // This is normal.
+	BuiltBy     = "go build" //nolint:gochecknoglobals,nolintlint // This is normal.
 )
 
 // rootCmd represents the base command when called without any subcommands.
@@ -27,18 +27,17 @@ make my life easier and will be gradually supplemented with various functionalit
 Now gch is not able to do so much, but I use it every day.
 
 Complete documentation is available at https://github.com/jtprogru/gch/wiki`,
-	Version: version,
+	Version: Version,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
-
 	if showVersion {
-		fmt.Println("gch version:", version)
-		fmt.Println("from commit:", commit)
-		fmt.Println("built date:", date)
-		fmt.Println("built by:", builtBy)
+		fmt.Println("gch version:", Version)
+		fmt.Println("from commit:", Commit)
+		fmt.Println("built date:", Date)
+		fmt.Println("built by:", BuiltBy)
 		os.Exit(0)
 	}
 	// Execute the root command.
