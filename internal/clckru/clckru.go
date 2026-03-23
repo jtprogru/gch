@@ -39,7 +39,7 @@ func Shorten(longURL, utmTags string) (string, error) {
 
 	// Sending the HTTP request using a client.
 	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := client.Do(req) //nolint:gosec // URL доверенный (clck.ru API)
 	if err != nil {
 		return "", fmt.Errorf("failed to send request: %w", err)
 	}
