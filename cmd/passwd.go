@@ -21,11 +21,7 @@ var (
 				IncludeSymbols: passwdSpecials,
 			}
 
-			p, err := passwd.GetPasswd(cfg)
-			if err != nil {
-				_, _ = fmt.Println("password generation err: ", err) //nolint:errcheck,nolintlint // Ignore errors.
-				return
-			}
+			p := passwd.GetPasswd(cfg)
 			_, _ = fmt.Println(p) //nolint:errcheck,nolintlint // Ignore errors.
 		},
 	}
