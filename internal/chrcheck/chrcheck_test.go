@@ -1,10 +1,10 @@
-package utils_test
+package chrcheck_test
 
 import (
 	"fmt"
 	"testing"
 
-	"github.com/jtprogru/gch/internal/utils"
+	"github.com/jtprogru/gch/internal/chrcheck"
 	"github.com/magiconair/properties/assert"
 )
 
@@ -37,7 +37,7 @@ func TestCheckDigit(t *testing.T) {
 
 	for _, tt := range testCases {
 		t.Run(tt.s, func(t *testing.T) {
-			got := utils.CheckDigit(tt.s)
+			got := chrcheck.CheckDigit(tt.s)
 			assert.Equal(t, got, tt.a, fmt.Sprintf("want %t, got %t", tt.a, got))
 		})
 	}
@@ -72,7 +72,7 @@ func TestCheckPunct(t *testing.T) {
 
 	for _, tt := range testCases {
 		t.Run(tt.s, func(t *testing.T) {
-			got := utils.CheckPunct(tt.s)
+			got := chrcheck.CheckPunct(tt.s)
 			assert.Equal(t, got, tt.a, fmt.Sprintf("want %t, got %t", tt.a, got))
 		})
 	}
@@ -115,7 +115,7 @@ func TestCheckDigitAndPunt(t *testing.T) {
 
 	for _, tt := range testCases {
 		t.Run(tt.s, func(t *testing.T) {
-			got := utils.CheckDigitAndPunt(tt.s)
+			got := chrcheck.CheckDigitAndPunt(tt.s)
 			assert.Equal(t, got, tt.a, fmt.Sprintf("want %t, got %t", tt.a, got))
 		})
 	}

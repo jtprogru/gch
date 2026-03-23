@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/jtprogru/gch/internal/chrcheck"
 	"github.com/jtprogru/gch/internal/passwd"
-	"github.com/jtprogru/gch/internal/utils"
 	"github.com/magiconair/properties/assert"
 )
 
@@ -47,9 +47,9 @@ func TestGetPasswd(t *testing.T) {
 		t.Run(fmt.Sprintf("Length(%d)_IncludeDigits(%t)_IncludeSymbols(%t)", tt.conf.Length, tt.conf.IncludeDigits, tt.conf.IncludeSymbols), func(t *testing.T) {
 			gotPasswd := passwd.GetPasswd(tt.conf)
 			assert.Equal(t, len(gotPasswd), tt.conf.Length, fmt.Sprintf("expected password length %d, got %d", tt.conf.Length, len(gotPasswd)))
-			assert.Equal(t, utils.CheckDigit(gotPasswd), tt.conf.IncludeDigits, fmt.Sprintf("expected password to contain digits, got "+gotPasswd))
-			assert.Equal(t, utils.CheckPunct(gotPasswd), tt.conf.IncludeSymbols, fmt.Sprintf("expected password to contain punct, got "+gotPasswd))
-			assert.Equal(t, utils.CheckDigitAndPunt(gotPasswd), tt.conf.IncludeSymbols && tt.conf.IncludeDigits, fmt.Sprintf("expected password to contain only letters, got "+gotPasswd))
+			assert.Equal(t, chrcheck.CheckDigit(gotPasswd), tt.conf.IncludeDigits, "expected password to contain digits, got "+gotPasswd)
+			assert.Equal(t, chrcheck.CheckPunct(gotPasswd), tt.conf.IncludeSymbols, "expected password to contain punct, got "+gotPasswd)
+			assert.Equal(t, chrcheck.CheckDigitAndPunt(gotPasswd), tt.conf.IncludeSymbols && tt.conf.IncludeDigits, "expected password to contain only letters, got "+gotPasswd)
 		})
 	}
 }
