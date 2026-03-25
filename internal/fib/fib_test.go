@@ -71,14 +71,14 @@ func TestFibIterative(t *testing.T) {
 
 // Benchmark for Recursive Function.
 func BenchmarkFibRecursive(b *testing.B) {
-	for i := 0; i < b.N; i++ {
+	for range b.N {
 		fib.Recursive(uint(20))
 	}
 }
 
 // Benchmark for Iterative Function.
 func BenchmarkFibIterative(b *testing.B) {
-	for i := 0; i < b.N; i++ {
+	for range b.N {
 		fib.Iterative(uint(20))
 	}
 }

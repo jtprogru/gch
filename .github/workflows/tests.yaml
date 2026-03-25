@@ -10,23 +10,22 @@ permissions:
   contents: read
 
 env:
-  GO_VERSION: stable
-  TASKFILE_VERSION: 3.x
+  GO_VERSION: "1.22"
 
 jobs:
   testing:
     runs-on: ubuntu-latest
     steps:
-      - name: Install Task
-        uses: arduino/setup-task@b91d5d2c96a56797b48ac1e0e89220bf64044611
-        with:
-          version: ${{ env.TASKFILE_VERSION }}
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
+          cache: true
       - name: Run tests
-        run: |
-          task test
+        run: go test -v -race -coverprofile=cover.out ./...
+      - name: Upload coverage
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./cover.out
+          fail_ci_if_error: false
 

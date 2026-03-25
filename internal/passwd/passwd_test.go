@@ -64,10 +64,9 @@ func BenchmarkGetPasswd(b *testing.B) {
 	}
 
 	for _, cfg := range benchmarks {
-		cfg := cfg // capture range variable
 		b.Run(fmt.Sprintf("len(%d)_digits(%t)_symbols(%t)", cfg.Length, cfg.IncludeDigits, cfg.IncludeSymbols), func(b *testing.B) {
 			b.ReportAllocs()
-			for i := 0; i < b.N; i++ {
+			for range b.N {
 				_ = passwd.GetPasswd(cfg)
 			}
 		})

@@ -3,7 +3,6 @@ package passwd
 import (
 	"crypto/rand"
 	"math/big"
-	"strings"
 )
 
 const (
@@ -13,10 +12,10 @@ const (
 	// UpperLetters is the list of uppercase letters.
 	UpperLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-	// Digits is the list of permitted Digits.
+	// Digits is the list of permitted digits.
 	Digits = "0123456789"
 
-	// Symbols is the list of Symbols.
+	// Symbols is the list of symbols.
 	Symbols = "~!@#$%^&*()_+`-={}|[]:<>?,./"
 )
 
@@ -27,12 +26,10 @@ type Config struct {
 	IncludeSymbols bool
 }
 
-// GetPasswd generates a secure passwordBuilder.
+// GetPasswd generates a secure password.
 func GetPasswd(cfg Config) string {
-	var passwordBuilder strings.Builder
 	alphabet := LowerLetters + UpperLetters
 
-	// Add the required character sets to the alphabet.
 	if cfg.IncludeDigits {
 		alphabet += Digits
 	}
@@ -40,14 +37,11 @@ func GetPasswd(cfg Config) string {
 		alphabet += Symbols
 	}
 
-	// Generate password.
-	for i := 0; i < cfg.Length; i++ {
-		// Get a secure random index.
+	password := make([]byte, cfg.Length)
+	for i := range cfg.Length {
 		idx, _ := rand.Int(rand.Reader, big.NewInt(int64(len(alphabet))))
-
-		// Append the character at the generated index to the password.
-		passwordBuilder.WriteString(string(alphabet[idx.Int64()]))
+		password[i] = alphabet[idx.Int64()]
 	}
 
-	return passwordBuilder.String()
+	return string(password)
 }
