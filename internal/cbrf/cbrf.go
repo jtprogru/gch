@@ -100,7 +100,7 @@ func (v *Valutes) getExchangeRates(ctx context.Context, cfg *Client) error {
 		return err
 	}
 
-	response, err := cfg.HTTPClient.Do(req)
+	response, err := cfg.HTTPClient.Do(req) //nolint:gosec // URL доверенный (CBRF API)
 	if err != nil {
 		return err
 	}

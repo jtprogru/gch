@@ -65,3 +65,9 @@ signs:
       - "${signature}"
       - "--detach-sign"
       - "${artifact}"
+
+homebrew_casks:
+  - repository:
+      owner: jtprogru
+      name: homebrew-tap
+    directory: Casks

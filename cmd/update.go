@@ -64,7 +64,7 @@ func getLatestRelease(ctx context.Context, repo string) (string, string, error) 
 	}
 
 	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := client.Do(req) //nolint:gosec // URL доверенный (GitHub API)
 	if err != nil {
 		return "", "", err
 	}
@@ -112,7 +112,7 @@ func downloadAndInstall(downloadURL string) error {
 
 	// Выполняем запрос
 	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := client.Do(req) //nolint:gosec // URL доверенный (GitHub Releases)
 	if err != nil {
 		return err
 	}
@@ -135,7 +135,7 @@ func downloadAndInstall(downloadURL string) error {
 	}
 
 	// Делаем файл исполняемым
-	err = os.Chmod(tmpFile.Name(), 0755)
+	err = os.Chmod(tmpFile.Name(), 0755) //nolint:gosec // tmpFile.Name() создан через os.CreateTemp() и безопасен
 	if err != nil {
 		return err
 	}
@@ -146,7 +146,7 @@ func downloadAndInstall(downloadURL string) error {
 		return err
 	}
 
-	err = os.Rename(tmpFile.Name(), execPath)
+	err = os.Rename(tmpFile.Name(), execPath) //nolint:gosec // tmpFile.Name() создан через os.CreateTemp() и безопасен
 	if err != nil {
 		return err
 	}

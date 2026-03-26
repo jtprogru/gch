@@ -59,7 +59,7 @@ func Brief(url string) (string, error) {
 	req.Header.Set("Authorization", "OAuth "+token)
 
 	// Send the HTTP request.
-	resp, err := httpClient.Do(req)
+	resp, err := httpClient.Do(req) //nolint:gosec // URL доверенный (Yandex 300 API)
 	if err != nil {
 		return "", fmt.Errorf("failed to send request: %w", err)
 	}

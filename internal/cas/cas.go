@@ -44,7 +44,7 @@ func (r *Client) Check(userID uint64) (bool, error) {
 	}
 
 	req.Header.Set("User-Agent", "gch-cas-client")
-	resp, err := r.httpClient.Do(req)
+	resp, err := r.httpClient.Do(req) //nolint:gosec // URL доверенный (CAS API)
 	if err != nil {
 		r.logf("Error while sending request: %v", err)
 		return false, err

@@ -12,11 +12,11 @@ const (
 	// UpperLetters is the list of uppercase letters.
 	UpperLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-	// Digits is the list of permitted Digits.
+	// Digits is the list of permitted digits.
 	Digits = "0123456789"
 
-	// Symbols is the list of Symbols.
-	Symbols = "~!@#$%^&*()_+`-={}|[]\\:\"<>?,./"
+	// Symbols is the list of symbols.
+	Symbols = "~!@#$%^&*()_+`-={}|[]:<>?,./"
 )
 
 // Config struct for configuration of GetPasswd.
@@ -27,11 +27,9 @@ type Config struct {
 }
 
 // GetPasswd generates a secure password.
-func GetPasswd(cfg Config) (string, error) {
-	var password string
+func GetPasswd(cfg Config) string {
 	alphabet := LowerLetters + UpperLetters
 
-	// Add the required character sets to the alphabet.
 	if cfg.IncludeDigits {
 		alphabet += Digits
 	}
@@ -39,17 +37,11 @@ func GetPasswd(cfg Config) (string, error) {
 		alphabet += Symbols
 	}
 
-	// Generate password.
-	for i := 0; i < cfg.Length; i++ {
-		// Get a secure random index.
-		idx, err := rand.Int(rand.Reader, big.NewInt(int64(len(alphabet))))
-		if err != nil {
-			return "", err
-		}
-
-		// Append the character at the generated index to the password.
-		password += string(alphabet[idx.Int64()])
+	password := make([]byte, cfg.Length)
+	for i := range cfg.Length {
+		idx, _ := rand.Int(rand.Reader, big.NewInt(int64(len(alphabet))))
+		password[i] = alphabet[idx.Int64()]
 	}
 
-	return password, nil
+	return string(password)
 }

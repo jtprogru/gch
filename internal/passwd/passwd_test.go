@@ -1,92 +1,74 @@
-package passwd
+package passwd_test
 
 import (
 	"fmt"
 	"testing"
-	"unicode"
 
+	"github.com/jtprogru/gch/internal/chrcheck"
+	"github.com/jtprogru/gch/internal/passwd"
 	"github.com/magiconair/properties/assert"
 )
 
-func TestGetPasswdLength(t *testing.T) {
-	cfg := Config{
-		Length:         64,
-		IncludeDigits:  false,
-		IncludeSymbols: false,
+func TestGetPasswd(t *testing.T) {
+	testCases := []struct {
+		conf passwd.Config
+	}{
+		{
+			conf: passwd.Config{
+				Length:         64,
+				IncludeDigits:  false,
+				IncludeSymbols: false,
+			},
+		},
+		{
+			conf: passwd.Config{
+				Length:         32,
+				IncludeDigits:  true,
+				IncludeSymbols: false,
+			},
+		},
+		{
+			conf: passwd.Config{
+				Length:         10,
+				IncludeDigits:  false,
+				IncludeSymbols: true,
+			},
+		},
+		{
+			conf: passwd.Config{
+				Length:         64,
+				IncludeDigits:  true,
+				IncludeSymbols: false,
+			},
+		},
 	}
 
-	password, err := GetPasswd(cfg)
-	if err != nil {
-		t.Errorf("want no error, got %s", err)
+	for _, tt := range testCases {
+		t.Run(fmt.Sprintf("Length(%d)_IncludeDigits(%t)_IncludeSymbols(%t)", tt.conf.Length, tt.conf.IncludeDigits, tt.conf.IncludeSymbols), func(t *testing.T) {
+			gotPasswd := passwd.GetPasswd(tt.conf)
+			assert.Equal(t, len(gotPasswd), tt.conf.Length, fmt.Sprintf("expected password length %d, got %d", tt.conf.Length, len(gotPasswd)))
+			assert.Equal(t, chrcheck.CheckDigit(gotPasswd), tt.conf.IncludeDigits, "expected password to contain digits, got "+gotPasswd)
+			assert.Equal(t, chrcheck.CheckPunct(gotPasswd), tt.conf.IncludeSymbols, "expected password to contain punct, got "+gotPasswd)
+			assert.Equal(t, chrcheck.CheckDigitAndPunt(gotPasswd), tt.conf.IncludeSymbols && tt.conf.IncludeDigits, "expected password to contain only letters, got "+gotPasswd)
+		})
 	}
-
-	assert.Equal(t, len(password), cfg.Length, fmt.Sprintf("expected password length %d, got %d", cfg.Length, len(password)))
 }
 
-func TestGetPasswdWithDigits(t *testing.T) {
-	cfg := Config{
-		Length:         32,
-		IncludeDigits:  true,
-		IncludeSymbols: false,
-	}
-	password, err := GetPasswd(cfg)
-	if err != nil {
-		t.Errorf("want no error, got %s", err)
+func BenchmarkGetPasswd(b *testing.B) {
+	benchmarks := []passwd.Config{
+		{Length: 16, IncludeDigits: true, IncludeSymbols: true},
+		{Length: 64, IncludeDigits: true, IncludeSymbols: true},
+		{Length: 1_024, IncludeDigits: true, IncludeSymbols: true},
+		{Length: 1_048_576, IncludeDigits: true, IncludeSymbols: true},
+		{Length: 3_145_728, IncludeDigits: true, IncludeSymbols: true},
 	}
 
-	hasDigit := false
-	for _, char := range password {
-		if unicode.IsDigit(char) {
-			hasDigit = true
-			break
-		}
+	for _, cfg := range benchmarks {
+		b.Run(fmt.Sprintf("len(%d)_digits(%t)_symbols(%t)", cfg.Length, cfg.IncludeDigits, cfg.IncludeSymbols), func(b *testing.B) {
+			b.ReportAllocs()
+			for range b.N {
+				_ = passwd.GetPasswd(cfg)
+			}
+		})
 	}
-
-	assert.Equal(t, hasDigit, true, "expected password to contain digits, got "+password)
-}
-
-func TestGetPasswdWithSymbols(t *testing.T) {
-	cfg := Config{
-		Length:         10,
-		IncludeDigits:  false,
-		IncludeSymbols: true,
-	}
-	hasSymbol := false
-
-	password, err := GetPasswd(cfg)
-	if err != nil {
-		t.Errorf("expected no error, got %s", err)
-	}
-
-	for _, char := range password {
-		if unicode.IsSymbol(char) || unicode.IsPunct(char) {
-			hasSymbol = true
-			break
-		}
-	}
-
-	assert.Equal(t, hasSymbol, true, "expected password to contain symbols, got "+password)
-}
-
-func TestGetPasswdWithoutDigitsAndSymbols(t *testing.T) {
-	cfg := Config{
-		Length:         64,
-		IncludeDigits:  false,
-		IncludeSymbols: false,
-	}
-
-	password, err := GetPasswd(cfg)
-	if err != nil {
-		t.Errorf("expected no error, got %s", err)
-	}
-
-	hasInvalidChar := false
-	for _, char := range password {
-		if unicode.IsDigit(char) || unicode.IsSymbol(char) || unicode.IsPunct(char) {
-			hasInvalidChar = true
-			break
-		}
-	}
-
-	assert.Equal(t, hasInvalidChar, false, "expected password to contain only letters, got "+password)
 }
