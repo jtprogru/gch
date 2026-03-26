@@ -70,4 +70,4 @@ homebrew_casks:
   - repository:
       owner: jtprogru
       name: homebrew-tap
-    directory: Casks
+    directory: Formula
